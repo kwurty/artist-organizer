@@ -1,3 +1,5 @@
+const axios = require('axios')
+
 exports.generateString = (length) => {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
