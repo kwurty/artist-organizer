@@ -1,12 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
 import Login from "../components/Login.vue"
-
+import Artists from "../views/Artists.vue"
+import Playlists from "../views/Playlists.vue"
+import Search from "../views/Search.vue"
+import Helloworld from "../components/HelloWorld.vue"
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Helloworld
   },
   {
     path: "/about",
@@ -21,6 +23,21 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login
+  },
+  {
+    path: "/playlists",
+    name: "Playlists",
+    component: Playlists
+  },
+  {
+    path: "/artists",
+    name: "Artists",
+    component: Artists
+  },
+  {
+    path: "/search",
+    name: "Search",
+    component: Search
   }
 ];
 

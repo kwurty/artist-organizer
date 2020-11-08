@@ -1,4 +1,6 @@
 import { createStore } from "vuex";
+import Axios from 'axios';
+require('dotenv').config()
 
 export default createStore({
   state: {
@@ -14,27 +16,21 @@ export default createStore({
     storeUser(state, user) {
       state.user = user;
     },
+    tempStore(state, user) {
+      state.user = user
+    },
     clearAuthData(state) {
       state.idToken = null;
       state.userId = null;
     }
   },
   actions: {
-    tryAutoLogin({ commit }) {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
-      const expirationDate = localStorage.getItem("expirationDate");
-      const now = new Date();
-      if (now >= expirationDate) {
-        return;
-      }
-      const userId = localStorage.getItem("userId");
-      commit("authUser", {
-        token: token,
-        userId: userId
-      });
+    tryAutoLogin(context) {
+      console.log("trying");
+      Axios.get(`${process.env.VUE_APP_BACKEND_URI}dbtest`)
+      .then(results => {
+        context.commit('tempStore', (results.data))
+      })
     }
   },
   getters: {

@@ -1,4 +1,5 @@
 const axios = require('axios')
+const jwt = require('jsonwebtoken');
 
 exports.generateString = (length) => {
     var result           = '';
@@ -18,3 +19,11 @@ exports.axiosRequest = (params) => axios({
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   });
+
+
+exports.userCookie = (user, res) => {
+
+
+
+  return token
+}
