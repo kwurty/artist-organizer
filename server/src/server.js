@@ -5,7 +5,7 @@ const cors = require('cors');
 const queryString = require('querystring');
 const cookieParser = require('cookie-parser');
 const app = express()
-const { generateString, axiosRequest, userCookie } = require('./utils');
+const { generateString, axiosRequest, validateToken, isTokenExpired } = require('./utils');
 const { env } = require('process');
 require('dotenv').config()
 const mongoose = require('./db.config')
@@ -19,7 +19,7 @@ const { error } = require('console');
 app.use(morgan('combined'))
   .use(cors())
   .use(cookieParser());
-  
+
 // simplify the environmental variables
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -27,17 +27,40 @@ const CALLBACK_URL = process.env.REDIRECT_URI;
 const FRONTEND_URI = process.env.FRONTEND_URI;
 const STATEKEY = 'spotify_auth_state';
 
-generateToken = async (user) => {return await jwt.sign({id: user.spotify_id}, process.env.COOKIE_KEY, {expiresIn: "7d"});}
-validateToken = async (token) => {return await jwt.verify(token, process.env.COOKIE_KEY);}
+generateToken = async (user) => { return await jwt.sign({ id: user.spotify_id }, process.env.COOKIE_KEY, { expiresIn: "7d" }); }
 
 checkTokenExpiration = async (token) => {
   right_now = Date.now();
   return (
-    isFinite(token=this.convert(token).valueOf()) ? (token>right_now)-(token<right_now) : NaN
+    isFinite(token = this.convert(token).valueOf()) ? (token > right_now) - (token < right_now) : NaN
   );
 }
 
 getUserInfo = async (userid) => { return User.findOne({ spotify_id: userid }).exec() }
+
+
+const LoggerMiddleware = (req, res, next) => {
+  console.log(`Logged  ${req.url}  ${req.method} -- ${new Date()}`)
+  next();
+}
+
+
+const verifyUserInfo = async (req, res, next) => {
+  if (req.cookies.user) {
+    const token = await validateToken(req.cookies.user);
+    console.log("got token:", token)
+    if (token.id) {
+      const user = await User.findOne({ spotify_id: token.id }, 'access_token expires_in refresh_token')
+      console.log("got user:", user)
+      req.test = user;
+      next();
+    }
+  } else {
+    next()
+  }
+}
+
+app.use(verifyUserInfo);
 
 setFrontEndUser = (user) => {
   // This should always be the data retrieved from the database - at no point should the parameter be anything other than
@@ -58,12 +81,12 @@ app.get('/login', async (req, res) => {
   if (req.cookies.user) {
     // let's verify the cookie is legit
     let verifiedUser = await validateToken(req.cookies.user);
-    if(verifiedUser) {
+    if (verifiedUser) {
       // let's see if the user is in the database
       let userInDatabase = await getUserInfo(verifiedUser.id);
-      if(userInDatabase) {
+      if (userInDatabase) {
         // user is in the database, send the info to the front end
-       return res.send(setFrontEndUser(userInDatabase));
+        return res.send(setFrontEndUser(userInDatabase));
       } else {
         // user isn't in the database but they have a cookie - let's get rid of that cookie and start fresh
         res.clearCookie('user');
@@ -71,18 +94,18 @@ app.get('/login', async (req, res) => {
     }
   }
   // No cookies! Move on to spotify auth
-    const state = generateString(16);
-    res.cookie(STATEKEY, state);
-    return res.redirect(
-      `https://accounts.spotify.com/authorize?${queryString.stringify({
-        response_type: 'code',
-        client_id: CLIENT_ID,
-        scope: scopes.join(' '),
-        redirect_uri: CALLBACK_URL,
-        state: state,
-        show_dialog: true
-      })}`,
-    );
+  const state = generateString(16);
+  res.cookie(STATEKEY, state);
+  return res.redirect(
+    `https://accounts.spotify.com/authorize?${queryString.stringify({
+      response_type: 'code',
+      client_id: CLIENT_ID,
+      scope: scopes.join(' '),
+      redirect_uri: CALLBACK_URL,
+      state: state,
+      show_dialog: true
+    })}`,
+  );
 });
 
 
@@ -133,23 +156,23 @@ app.get('/loggedin', async (req, res) => {
 
     // Tokens and user information retrieved
     //check for existing user
-    User.findOne({spotify_id: userInfo.data.id}).exec(async (err, dbuser) => {
-     
+    User.findOne({ spotify_id: userInfo.data.id }).exec(async (err, dbuser) => {
+
       // if user exists, make the JWT, store it as a cookie, and send the user info to front end
-      if( dbuser != null && dbuser.spotify_id === userInfo.data.id) {
+      if (dbuser != null && dbuser.spotify_id === userInfo.data.id) {
         // return with cookie
         let userToken = await generateToken(dbuser);
         res
-        .clearCookie("user")
-        .cookie("user", userToken)
-        .send({
-          spotify_id: dbuser.spotify_id,
-          display_name: dbuser.display_name,
-          email: dbuser.email
-        });
-        
+          .clearCookie("user")
+          .cookie("user", userToken)
+          .send({
+            spotify_id: dbuser.spotify_id,
+            display_name: dbuser.display_name,
+            email: dbuser.email
+          });
+
       } else {
-          // user does not exist in database
+        // user does not exist in database
         // add to the database
         let date = new Date();
         const newUser = new User({
@@ -164,11 +187,12 @@ app.get('/loggedin', async (req, res) => {
         }).save((err, dbuser) => {
           // make the JWT, store it as a cookie, and send the user info to front end 
           res
-          .cookie('user', generateToken(dbuser))
-          .send({
-            spotify_id: dbuser.spotify_id,
-            display_name: dbuser.display_name,
-            email: dbuser.email});
+            .cookie('user', generateToken(dbuser))
+            .send({
+              spotify_id: dbuser.spotify_id,
+              display_name: dbuser.display_name,
+              email: dbuser.email
+            });
         })
       }
     })
@@ -179,26 +203,37 @@ app.get('/loggedin', async (req, res) => {
 
 app.get('/logged', async (req, res) => {
   jwt.verify(req.cookies.user, process.env.COOKIE_KEY, (err, user) => {
-    if(err) {
+    if (err) {
       return res.sendStatus(403);
-    } 
+    }
     console.log(user)
   })
-  const dbuser = await User.findOne({spotify_id: 'kurtyywurtyy'})
-  let date = new Date();
-  console.log(date);
-  console.log(dbuser.expires_in);
-  console.log(dbuser.expires_in < date);
+  const dbuser = await User.findOne({ spotify_id: 'kurtyywurtyy' })
+
 })
 
-app.get('/dbtest', async (req,res) => {
-  
-  const results = await User.findOne({spotify_id: 'kurtyywurtyy'})
+app.get('/dbtest', async (req, res) => {
+  const results = await User.findOne({ spotify_id: 'kurtyywurtyy' })
   res.send(results);
 })
 
-app.get('/test', async (req, res) => {
-  const results = await mongoose.find({})
+app.get('/testtoken', async (req, res) => {
+
+  // this date comparison works.
+  let date = new Date().getTime();
+  // grabbing this from middleware - test only
+  let expires = new Date(req.test.expires_in).getTime();
+
+  console.log(expires, date)
+  console.log(expires > date)
+  res.send(isTokenExpired(expires));
+  // req.test.expires_in > now ? res.send('stored token greater than now') : res.send('stored token not greater than now');
+
+  // res.send(req.test);
+})
+
+app.get('/', (req, res) => {
+
 })
 
 app.get('/refresh_token', async (req, res) => {
@@ -226,7 +261,7 @@ app.get('/refresh_token', async (req, res) => {
 
 // Launch server
 
-if(mongoose.connections[0].name == process.env.MONGODB_DATABASE) {
+if (mongoose.connections[0].name == process.env.MONGODB_DATABASE) {
   console.log('Connected to server - now live on port ' + process.env.PORT)
   app.listen(process.env.PORT)
 }
