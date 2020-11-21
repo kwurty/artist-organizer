@@ -8,4 +8,8 @@ mongoose.connect(`mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PA
     useFindAndModify: false,
     useCreateIndex: true
 });
+
+mongoose.connection.on('error', err => {
+    console.error(err);
+});
 module.exports = mongoose

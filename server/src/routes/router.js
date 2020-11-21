@@ -1,11 +1,7 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
-const spotifyRoutes = require('./spotify/spotify');
 
-router.get('/login', (req,res) => {
+router.use('/', require('./auth/auth'));
+router.use('/spotify', require('./spotify/spotify'));
 
-})
-
-router.get('/logged', (req, res) => {
-    
-})
+module.exports = router;
