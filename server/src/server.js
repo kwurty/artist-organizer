@@ -1,7 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const axios = require('axios')
-const cors = require('cors');
+// const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const app = express()
 const { isTokenExpired } = require('./utils');
@@ -12,8 +12,16 @@ const router = require('./routes/router');
 
 /// init middleware
 app.use(morgan('combined'))
-  .use(cors())
+  // .use(cors())
   .use(cookieParser());
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+  res.header("Access-Control-Allow-Credentials", true);
+  // res.header("Access-Control-Allow-Origin", "localhost:8080"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 
 app.get('/testtoken', async (req, res) => {

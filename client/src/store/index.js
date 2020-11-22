@@ -1,12 +1,15 @@
 import { createStore } from "vuex";
 import Axios from 'axios';
+import spotify from './modules/spotify';
+
 require('dotenv').config()
 
 export default createStore({
   state: {
     idToken: null,
     userId: null,
-    user: null
+    user: null,
+    isAuthenticated: false
   },
   mutations: {
     authUser(state, userData) {
@@ -22,15 +25,19 @@ export default createStore({
     clearAuthData(state) {
       state.idToken = null;
       state.userId = null;
+    },
+    setAuthed(state, status) {
+      state.isAuthenticated = status
     }
   },
   actions: {
-    tryAutoLogin(context) {
+    async tryAutoLogin(context) {
       console.log("trying");
-      Axios.get(`${process.env.VUE_APP_BACKEND_URI}dbtest`)
-      .then(results => {
-        context.commit('tempStore', (results.data))
-      })
+      let user = await Axios.get(`${process.env.VUE_APP_BACKEND_URI}/checklogin`, { withCredentials: true });
+      if (user.spotify_id !== null) {
+        context.commit('storeUser', user.data);
+        context.commit('setAuthed', true);
+      }
     }
   },
   getters: {
@@ -38,8 +45,10 @@ export default createStore({
       return state.user;
     },
     isAuthenticated(state) {
-      return state.idToken !== null;
+      return state.isAuthenticated;
     }
   },
-  modules: {}
+  modules: {
+    spotify
+  }
 });

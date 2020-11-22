@@ -1,7 +1,11 @@
 <template>
-
   <app-navigation> </app-navigation>
-  <router-view> </router-view>
+  <div class="columns" id="mail-app">
+    <app-side-navigation></app-side-navigation>
+    <div class="column messages hero is-fullheight" id="message-feed">
+      <router-view> </router-view>
+    </div>
+  </div>
 </template>
 
 <style>
@@ -11,6 +15,13 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.messages {
+  display: block;
+  background-color: #fff;
+  border-right: 1px solid #dedede;
+  padding: 40px 20px;
 }
 
 #nav {
@@ -28,14 +39,13 @@
 </style>
 
 <script>
-import Navigation from './components/Navigation.vue'
+import Navigation from "./components/Navigation.vue";
+import SideNavigation from "./components/SideNavigation.vue";
 export default {
-  data() {
-    
-  },
+  data() {},
   components: {
     appNavigation: Navigation,
-
-  }
-}
+    appSideNavigation: SideNavigation,
+  },
+};
 </script>

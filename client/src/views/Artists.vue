@@ -1,16 +1,10 @@
 <template>
-  <div>
-      Artists here
-      HELLO!!!!
-  </div>
+  <div>Artists here HELLO!!!!</div>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style>
-
 </style>

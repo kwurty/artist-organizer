@@ -25,35 +25,37 @@ exports.isTokenExpired = (time) => {
 }
 
 exports.validateTokenMiddle = async (req, res, next) => {
-  try{
-    console.log(req.cookies.user);
+  console.log("validate");
+  try {
+    console.dir(req.cookies.spotify_auth_state);
     let user = await jwt.verify(req.cookies.user, process.env.COOKIE_KEY);
     req.user = user;
     next()
-   }
-  catch(err){
+  }
+  catch (err) {
     res.status(500).json(err)
   }
 }
 
 exports.gatherUserMiddle = async (req, res, next) => {
+  console.log("gather");
   try {
     let user = await User.findOne({ spotify_id: req.user.id }).exec()
     req.user = user;
     next();
   }
-  catch(err) {
+  catch (err) {
     res.status(500).json(err);
   }
 }
 
-exports.checkExpirationMiddle = async (req, res, next) => { 
-  
-  try{
+exports.checkExpirationMiddle = async (req, res, next) => {
+
+  try {
     let right_now = new Date();
     let expires = new Date(req.user.expires_in);
-    if(expires < right_now) {
-      const { data: { access_token }} = await axios({
+    if (expires < right_now) {
+      const { data: { access_token } } = await axios({
         url: `https://accounts.spotify.com/api/token`,
         method: 'POST',
         params: {
@@ -64,49 +66,50 @@ exports.checkExpirationMiddle = async (req, res, next) => {
         }
       });
       let date = new Date();
-      await User.findByIdAndUpdate(req.user._id, {access_token: access_token, expires_in: date.setHours(date.getHours() + 1)});
+      await User.findByIdAndUpdate(req.user._id, { access_token: access_token, expires_in: date.setHours(date.getHours() + 1) });
       req.user.access_token = access_token;
     }
   }
-  catch (err){
+  catch (err) {
     res.status(500).json(err);
-   }
+  }
   next()
 }
 exports.verifyUserInfo = async (req, res, next) => {
-  try{
+  try {
     if (req.cookies.user) {
-    const token = await this.validateToken(req.cookies.user);
-    console.log("token:", token)
-    if (token.id) {
-      const user = await User.findOne({ spotify_id: token.id }, 'access_token expires_in refresh_token')
-      console.log("user:", user)
-      if ( await this.isTokenExpired(user.expires_in) ) {
-        let userAccessToken = await axios({
-          method: 'get',
-          url: `${process.env.BACKEND_URI}spotify/refresh_token`,
-          params: {
-            refresh_token: user.refresh_token
+      const token = await this.validateToken(req.cookies.user);
+      console.log("token:", token)
+      if (token.id) {
+        const user = await User.findOne({ spotify_id: token.id }, 'access_token expires_in refresh_token')
+        console.log("user:", user)
+        if (await this.isTokenExpired(user.expires_in)) {
+          let userAccessToken = await axios({
+            method: 'get',
+            url: `${process.env.BACKEND_URI}spotify/refresh_token`,
+            params: {
+              refresh_token: user.refresh_token
+            }
+          });
+          console.log("access token :", userAccessToken)
+          try {
+            let results = await User.findByIdAndUpdate(user.id, { "access_token": userAccessToken });
+            console.log("dbupdate result: ", results);
+            user.access_token = userAccessToken;
+            console.log("final user: ", req.user);
+            req.user = user;
           }
-        });
-        console.log("access token :", userAccessToken)
-        try {
-          let results = await User.findByIdAndUpdate(user.id, {"access_token" : userAccessToken});
-          console.log("dbupdate result: ", results);
-          user.access_token = userAccessToken;
-          console.log("final user: ", req.user);
-          req.user = user;
+          catch (err) {
+            res.status(500).json(err)
+          }
         }
-        catch(err){ 
-          res.status(500).json(err)
-        }
+        next();
       }
+    } else {
       next();
     }
-  } else {
-    next();
-  }}
-  catch(err){
+  }
+  catch (err) {
     console.log('error');
     res.status(500).json(err)
   }

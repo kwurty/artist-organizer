@@ -15,9 +15,10 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const CALLBACK_URL = process.env.REDIRECT_URI;
 const FRONTEND_URI = process.env.FRONTEND_URI;
 const STATEKEY = 'spotify_auth_state';
-const scopes = ['playlist-read-private','playlist-read-collaborative','user-read-private','user-read-email','user-read-recently-played']
+const scopes = ['playlist-read-private', 'playlist-read-collaborative', 'user-read-private', 'user-read-email', 'user-read-recently-played']
+const middle = [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle];
 
-router.get('/login', async (req,res) => {
+router.get('/login', async (req, res) => {
   // Cookie exists?
   if (req.cookies.user) {
     // let's verify the cookie is legit
@@ -50,7 +51,7 @@ router.get('/login', async (req,res) => {
 })
 
 router.get('/loggedin', async (req, res) => {
-    
+
   // gather the authorization code and the returned state from Spotify redirect
   const { code, state } = req.query;
   const storedState = req.cookies ? req.cookies[STATEKEY] : null;
@@ -104,11 +105,7 @@ router.get('/loggedin', async (req, res) => {
         res
           .clearCookie("user")
           .cookie("user", userToken)
-          .send({
-            spotify_id: dbuser.spotify_id,
-            display_name: dbuser.display_name,
-            email: dbuser.email
-          });
+          .redirect(process.env.FRONTEND_URI);
 
       } else {
         // user does not exist in database
@@ -123,16 +120,12 @@ router.get('/loggedin', async (req, res) => {
           refresh_token: refresh_token,
           access_token: access_token,
           expires_in: date.setHours(date.getHours() + 1)
-        }).save( async (err, dbuser) => {
+        }).save(async (err, dbuser) => {
           // make the JWT, store it as a cookie, and send the user info to front end 
           let token = await generateToken(dbuser);
           res
             .cookie('user', token)
-            .send({
-              spotify_id: dbuser.spotify_id,
-              display_name: dbuser.display_name,
-              email: dbuser.email
-            });
+            .redirect(process.env.FRONTEND_URI);
         })
       }
     })
@@ -141,23 +134,24 @@ router.get('/loggedin', async (req, res) => {
   }
 });
 
-router.get('/checklogin', [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle ], async (req, res) => {
-  res.json(req.user);
+router.get('/checklogin', middle, async (req, res, next) => {
+  res.send(req.user);
+
 });
 
 router.get('/logged', async (req, res) => {
-    jwt.verify(req.cookies.user, process.env.COOKIE_KEY, (err, user) => {
-      if (err) {
-        return res.status(403).send(err);
-      }
-    })
-    const dbuser = await User.findOne({ spotify_id: 'kurtyywurtyy' })
-    res.send(dbuser);
+  jwt.verify(req.cookies.user, process.env.COOKIE_KEY, (err, user) => {
+    if (err) {
+      return res.status(403).send(err);
+    }
   })
+  const dbuser = await User.findOne({ spotify_id: 'kurtyywurtyy' })
+  res.send(dbuser);
+})
 
 router.get('/dbtest', async (req, res) => {
-    const results = await User.findOne({ spotify_id: 'kurtyywurtyy' })
-    res.send(results);
+  const results = await User.findOne({ spotify_id: 'kurtyywurtyy' })
+  res.send(results);
 })
 
 module.exports = router;

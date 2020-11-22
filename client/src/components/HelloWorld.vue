@@ -10,16 +10,13 @@
 export default {
   name: "HelloWorld",
   props: {
-    msg: String
+    msg: String,
   },
-    created() {
-      this.$store.dispatch('tryAutoLogin')
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
   },
-    computed: {
-      user() {
-        return this.$store.state.user
-      }
-    }
 };
 </script>
 
