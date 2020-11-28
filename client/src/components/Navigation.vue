@@ -66,9 +66,6 @@ export default {
       return this.$store.state.user;
     },
   },
-  created() {
-    this.$store.dispatch("tryAutoLogin");
-  },
 };
 </script>
 

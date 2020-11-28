@@ -2,7 +2,7 @@
   <app-navigation> </app-navigation>
   <div class="columns" id="mail-app">
     <app-side-navigation></app-side-navigation>
-    <div class="column messages hero is-fullheight" id="message-feed">
+    <div class="column router hero is-fullheight">
       <router-view> </router-view>
     </div>
   </div>
@@ -17,7 +17,7 @@
   color: #2c3e50;
 }
 
-.messages {
+.router {
   display: block;
   background-color: #fff;
   border-right: 1px solid #dedede;
@@ -46,6 +46,9 @@ export default {
   components: {
     appNavigation: Navigation,
     appSideNavigation: SideNavigation,
+  },  
+  mounted() {
+    this.$store.dispatch("tryAutoLogin");
   },
 };
 </script>

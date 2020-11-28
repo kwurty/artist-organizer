@@ -1,7 +1,10 @@
 <template>
   <div class="hello">
-    <p>
-      {{ user }}
+    <div v-if="auth" class="welcome">
+      Hello {{user.display_name}}
+    </div>
+    <p v-else>
+      Please login to use application
     </p>
   </div>
 </template>
@@ -13,6 +16,9 @@ export default {
     msg: String,
   },
   computed: {
+        auth() {
+      return this.$store.getters.isAuthenticated;
+    },
     user() {
       return this.$store.state.user;
     },
