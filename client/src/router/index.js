@@ -1,15 +1,20 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "../components/Login.vue"
-import Artists from "../views/Artists.vue"
+import Recent from "../views/RecentlyPlayed.vue"
 import Playlists from "../views/Playlists.vue"
 import Search from "../views/Search.vue"
 import Playlist from '../components/SpotifyPlaylist.vue'
-import Helloworld from "../components/HelloWorld.vue"
+import Home from "../components/Home.vue"
 const routes = [
+
+  {
+    path: "/:catchAll(.*)",
+    component: Home
+  },
   {
     path: "/",
     name: "Home",
-    component: Helloworld
+    component: Home
   },
   {
     path: "/login",
@@ -27,9 +32,9 @@ const routes = [
     component: Playlist
   },
   {
-    path: "/artists",
-    name: "Artists",
-    component: Artists
+    path: "/recent",
+    name: "Recently Played",
+    component: Recent
   },
   {
     path: "/search",

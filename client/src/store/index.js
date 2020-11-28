@@ -32,7 +32,6 @@ export default createStore({
   },
   actions: {
     async tryAutoLogin(context) {
-      console.log("trying");
       let user = await Axios.get(`${process.env.VUE_APP_BACKEND_URI}/checklogin`, { withCredentials: true });
       if (user.spotify_id !== null) {
         context.commit('storeUser', user.data);

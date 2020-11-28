@@ -1,5 +1,5 @@
 <template>
-  <aside class="column is-2 aside hero is-fullheight" v-if="!auth">
+  <aside class="column is-2 aside hero is-fullheight" v-if="auth">
     <div>
       <div class="playlist has-text-centered">
         <a class="button spotify-green-background is-block is-bold">
@@ -20,10 +20,9 @@
 export default {
   computed: {
     auth() {
-    return this.$store.getters.isAuthenticated;
+      return this.$store.getters.isAuthenticated;
+    },
   },
-
-  }
 };
 </script>
 

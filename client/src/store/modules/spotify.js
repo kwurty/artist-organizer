@@ -4,7 +4,8 @@ export default {
     state: {
         spotify_playlists: null,
         spotify_playlist_tracks: null,
-        artist: null
+        artist: null,
+        search_results: null
     },
     mutations: {
         setSpotifyPlaylists(state, playlists) {
@@ -13,14 +14,20 @@ export default {
         setArtist(state, artist) {
             this.state.artist = artist
         },
-        setSpotifyPlaylistTracks(state, tracks){
+        setSpotifyPlaylistTracks(state, tracks) {
             this.state.spotify_playlist_tracks = tracks
+        },
+        // I have zero idea why this one works with the state input
+        // but the others have to use this.state
+        // ???
+        setSearchResults(state, results) {
+            state.search_results = results
         }
     },
     actions: {
-       async getSpotifyPlaylists(context) {
-            if(context.rootState.user.access_token){
-                const {data: {items}} = await Axios({
+        async getSpotifyPlaylists(context) {
+            if (context.rootState.user.access_token != undefined) {
+                const { data: { items } } = await Axios({
                     method: 'GET',
                     url: 'https://api.spotify.com/v1/me/playlists',
                     headers: {
@@ -31,13 +38,13 @@ export default {
                         'limit': 50
                     }
                 });
-                console.log(items);
+                (items);
                 context.commit('setSpotifyPlaylists', items);
             }
         },
         async getSpotifyPlaylistTracks(context, url) {
-            if(context.rootState.user.access_token){
-                const {data: {items}} = await Axios({
+            if (context.rootState.user.access_token != undefined) {
+                const { data: { items } } = await Axios({
                     method: 'GET',
                     url,
                     headers: {
@@ -45,8 +52,30 @@ export default {
                         'Authorization': `Bearer ${context.rootState.user.access_token}`
                     }
                 });
-                console.log(items);
                 context.commit('setSpotifyPlaylistTracks', items);
+            }
+        },
+        async getSearchResults(context, search) {
+            ("search", search);
+            if (context.rootState.user.access_token) {
+                const { data: { albums, artists, tracks } } = await Axios({
+                    method: 'GET',
+                    url: 'https://api.spotify.com/v1/search',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${context.rootState.user.access_token}`
+                    },
+                    params: {
+                        type: 'artist,track,album',
+                        q: search
+                    }
+                });
+                let results = {
+                    albums: albums.items,
+                    artists: artists.items,
+                    tracks: tracks.items
+                }
+                context.commit('setSearchResults', results);
             }
         }
     },
@@ -54,8 +83,11 @@ export default {
         getSpotifyPlaylists(state) {
             return state.spotify_playlists;
         },
-        getSpotifyPlaylistTracks(state){
+        getSpotifyPlaylistTracks(state) {
             return state.spotify_playlist_tracks;
+        },
+        getSearchResultItems(state) {
+            return state.search_results;
         }
     }
 }

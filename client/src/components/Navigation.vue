@@ -8,16 +8,26 @@
             alt="Bulma: a modern CSS framework based on Flexbox"
           />
         </a>
-        <router-link to="/artists" class="navbar-item cwhite"
-          >View Artistlists</router-link
+        <router-link to="/recent" class="navbar-item cwhite"
+          >Recently Played</router-link
         >
         <router-link to="/playlists" class="navbar-item"
-          >View Playlists</router-link
+          >Spotify Playlists</router-link
         >
-        <router-link to="/search" class="navbar-item"
-          >Search For Artists</router-link
-        >
-
+        <div class="field has-addons">
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder="Search artist, song, or album"
+              v-model="search"
+            />
+          </div>
+          <div class="control">
+            <a class="button is-info" @click="spotifySearch"> Search </a>
+          </div>
+        </div>
+        {{ search }}
         <div class="navbar-burger burger" data-target="navMenu">
           <span></span>
           <span></span>
@@ -58,12 +68,29 @@
 
 <script>
 export default {
+  data: () => {
+    return {
+      search: "",
+    };
+  },
   computed: {
     auth() {
       return this.$store.getters.isAuthenticated;
     },
     user() {
       return this.$store.state.user;
+    },
+  },
+  methods: {
+    spotifySearch() {
+      if (this.search.length > 0) {
+        if (this.search.length > 3) {
+          this.$store.commit("setSearchResults", null);
+          this.$store.dispatch("getSearchResults", this.search);
+          this.search = "";
+          this.$router.push("/search");
+        }
+      }
     },
   },
 };
