@@ -11,10 +11,5 @@ const PlaylistSchema = new Schema({
     artists: Array
 })
 
-const PlaylistItemSchema = new Schema({
-    artist: String,
-    genres: Array
-})
 
-exports.Playlist = mongoose.model('Playlist', PlaylistSchema);
-exports.PlaylistItem = mongoose.model('PlaylistItem', PlaylistItemSchema);
+module.exports = mongoose.model('Playlist', PlaylistSchema);

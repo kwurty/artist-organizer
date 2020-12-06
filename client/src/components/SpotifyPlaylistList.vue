@@ -25,8 +25,7 @@ export default {
   },
   methods: {
     openPlaylist(url) {
-      this.$store.commit("setSpotifyPlaylistTracks", null);
-      this.$store.dispatch("getSpotifyPlaylistTracks", url);
+      this.$store.dispatch("getSpotifyPlaylistTracks", {url, allTracks: []});
       this.$router.push("/playlists/tracks");
     },
   },

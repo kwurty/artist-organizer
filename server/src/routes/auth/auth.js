@@ -1,9 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../../models/user.model');
-const Playlist = require('../../models/playlist.model');
 const queryString = require('querystring');
-const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 

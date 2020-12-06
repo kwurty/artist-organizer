@@ -27,7 +27,6 @@ exports.isTokenExpired = (time) => {
 exports.validateTokenMiddle = async (req, res, next) => {
   console.log("validate");
   try {
-    console.dir(req.cookies.spotify_auth_state);
     let user = await jwt.verify(req.cookies.user, process.env.COOKIE_KEY);
     req.user = user;
     next()

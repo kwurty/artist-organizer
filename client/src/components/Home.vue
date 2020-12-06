@@ -2,6 +2,11 @@
   <div class="hello">
     <div v-if="auth" class="welcome">
       Hello {{user.display_name}}
+
+      <input v-model="playlistName" />
+      <button @click.prevent="newPlaylist"> Create Playlist </button>
+      <br />
+      {{results}}
     </div>
     <p v-else>
       Please login to use application
@@ -10,8 +15,15 @@
 </template>
 
 <script>
+import Axios from 'axios'
 export default {
   name: "HelloWorld",
+  data() {
+    return {
+      playlistName: '',
+      results: ''
+    }
+  },
   props: {
     msg: String,
   },
@@ -23,6 +35,19 @@ export default {
       return this.$store.state.user;
     },
   },
+  methods: {
+    async newPlaylist() {
+      console.log(this.playlistName);
+      Axios({
+        method: "POST",
+        url: `${process.env.VUE_APP_BACKEND_URI}/artists/playlist`,
+        withCredentials: true,
+        data: {
+          name: this.playlistName
+        }
+      })
+    }
+  }
 };
 </script>
 
