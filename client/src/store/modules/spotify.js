@@ -44,7 +44,7 @@ export default {
         },
         async getSpotifyPlaylistTracks(context, url) {
             if (context.rootState.user.access_token != undefined) {
-                const { data: { items } } = await Axios({
+                const { data } = await Axios({
                     method: 'GET',
                     url,
                     headers: {
@@ -52,12 +52,19 @@ export default {
                         'Authorization': `Bearer ${context.rootState.user.access_token}`
                     }
                 });
-                context.commit('setSpotifyPlaylistTracks', items);
+                context.commit('setSpotifyPlaylistTracks', data);
             }
         },
         async getSearchResults(context, search) {
             ("search", search);
             if (context.rootState.user.access_token) {
+
+                try {
+
+                }
+                catch(e) {
+                    context.commit('setSearchResults', e);
+                }
                 const { data: { albums, artists, tracks } } = await Axios({
                     method: 'GET',
                     url: 'https://api.spotify.com/v1/search',

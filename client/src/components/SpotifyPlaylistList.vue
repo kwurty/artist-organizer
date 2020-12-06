@@ -1,10 +1,14 @@
 <template>
-  <li className="spotify-playlist" @click="openPlaylist(playlist.tracks.href)">
-    <img v-if="playlist.images[1]" :src="playlist.images[1].url" />
-    <img v-else src="https://via.placeholder.com/300" alt="" />
-    <div className="spotify-playlist-description">
-      <div className="title">{{ playlist.name }}</div>
-      <section className="spotify-playlist-details">
+  <li class="spotify-playlist">
+    <a @click="openPlaylist(playlist.tracks.href)">
+      <img v-if="playlist.images[1]" :src="playlist.images[1].url" />
+      <img v-else src="https://via.placeholder.com/300" alt="" />
+    </a>
+    <div class="spotify-playlist-description">
+      <a class="title" @click="openPlaylist(playlist.tracks.href)"> 
+     {{ playlist.name }}
+     </a>
+      <section class="spotify-playlist-details">
         By {{ playlist.owner.display_name }}
       </section>
     </div>

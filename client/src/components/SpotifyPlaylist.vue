@@ -1,9 +1,10 @@
 <template>
-  <div class="playlist">
+  <div class="playlist" v-if="spotify_playlist_tracks != undefined">
     <ul>
-      <li v-for="track in spotify_playlist_tracks" :key="track.added_at">
+      <li v-for="track in spotify_playlist_tracks.items" :key="track.added_at">
+        <img v-if="track.track.album.images.length > 2" :src="track.track.album.images[2].url" >
         {{ track.track.name }}
-        <!-- <li>{{ track.track.Artists }}</li> -->
+        <div v-for="artist in track.track.artists" :key="artist.id"> {{artist.name}} </div>
       </li>
     </ul>
   </div>
@@ -11,12 +12,7 @@
 
 <script>
 export default {
-  props: {
-    playlist: {
-      type: Object,
-      required: true,
-    },
-  },
+
   computed: {
     spotify_playlist_tracks() {
       return this.$store.state.spotify_playlist_tracks;
