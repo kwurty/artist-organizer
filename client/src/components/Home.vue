@@ -38,14 +38,12 @@ export default {
   methods: {
     async newPlaylist() {
       console.log(this.playlistName);
-      Axios({
-        method: "POST",
-        url: `${process.env.VUE_APP_BACKEND_URI}/artists/playlist`,
-        withCredentials: true,
-        data: {
-          name: this.playlistName
-        }
+      let response = await Axios.post(`${process.env.VUE_APP_BACKEND_URI}/artist/playlist`, {
+        name: this.playlistName
+      }, {
+        withCredentials: true
       })
+      this.results = response;
     }
   }
 };

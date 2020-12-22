@@ -13,14 +13,15 @@ const router = require('./routes/router');
 /// init middleware
 app.use(morgan('combined'))
   // .use(cors())
-  .use(cookieParser());
+  .use(cookieParser())
+  .use(express.json());
 
 app.use(function (req, res, next) {
-  // res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-  res.header("Access-Control-Allow-Origin", "http://localhost:8081");
+  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
   res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
   // res.header("Access-Control-Allow-Origin", "localhost:8080"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, XMLHttpRequest");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
   next();
 });
 

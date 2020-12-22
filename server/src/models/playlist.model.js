@@ -5,10 +5,15 @@ const PlaylistSchema = new Schema({
     spotify_id: {
         required: true,
         type: String,
-        unique: true
+        unique: false
     },
-    display_name: String,
-    artists: Array
+    display_name: {
+        type: String,
+        required: true,
+        unique: false
+    },
+    artists: Array,
+    created_at: Date
 })
 
 

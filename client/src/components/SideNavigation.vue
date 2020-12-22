@@ -1,16 +1,16 @@
 <template>
   <aside class="column is-2 aside hero is-fullheight" v-if="auth">
     <div>
-      <div class="playlist has-text-centered">
+      <div class="main">
+        <div class="title">Artist Playlists</div>
+        <a class="item" @click.prevent="setPlaylist(playlist)" v-for="playlist in playlists" :key="playlist._id">
+          {{playlist}}
+        </a>
+      </div>
+            <div class="playlist has-text-centered">
         <a class="button spotify-green-background is-block is-bold">
           <span class="playlist">New Playlist</span>
         </a>
-      </div>
-      <div class="main">
-        <div class="title">Artist Playlists</div>
-        <a href="#" class="item"><span class="name">Inbox</span></a>
-        <a href="#" class="item"><span class="name">Starred</span></a>
-        <a href="#" class="item"><span class="name">Sent Mail</span></a>
       </div>
     </div>
   </aside>
@@ -22,7 +22,16 @@ export default {
     auth() {
       return this.$store.getters.isAuthenticated;
     },
+    playlists() {
+      return this.$store.getters.artistPlaylists;
+    },
   },
+  methods: {
+    setPlaylist(playlist) {
+      this.$store.dispatch('setArtistPlaylist', playlist);
+      this.$router.push(`/artistplaylists/${playlist._id}`);
+    }
+  }
 };
 </script>
 
@@ -35,6 +44,10 @@ body {
   line-height: 1.5;
   height: 100%;
   background-color: #fff;
+}
+
+.name {
+  text-transform: uppercase;
 }
 
 .spotify-green-background {

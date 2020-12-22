@@ -6,12 +6,12 @@ const queryString = require('querystring');
 const jwt = require('jsonwebtoken');
 const { verifyUserInfo, validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle } = require('../../utils');
 require('dotenv').config();
-const middle = [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle];
+const middle = [validateTokenMiddle, gatherUserMiddle];
 
-router.get('/playlists', [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle], async (req,res, next) => {
+router.get('/playlists', middle, async (req,res, next) => {
     try{
-        Playlist.findMany({spotify_id: req.user.spotify_id}).exec(async (err, results) => {
-            if( results.length > 1) {
+        Playlist.find({spotify_id: req.user.spotify_id}).exec(async (err, results) => {
+            if( results.length > 0) {
                 res.send(results);
             }
         });
@@ -21,8 +21,40 @@ router.get('/playlists', [validateTokenMiddle, gatherUserMiddle, checkExpiration
     }
 })
 
-router.post('/playlist', [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle], async(req, res, next) => {
-    res.send(req.body);
+router.get('/playlist', middle, async (req, res, next) => {
+    try{
+        Playlist.findOne({id: req.body.id}).exec(async (err, results) => {
+            if (err) {
+                res.send(err)
+            } else {
+                res.send(results);
+            }
+        })
+    }
+    catch(e) {
+        res.status(500).send(e);
+    }
+})
+
+router.post('/playlist', middle,  async(req, res, next) => {
+    try {
+        let right_now = new Date();
+        const newPlaylist = new Playlist({
+            spotify_id: req.user.spotify_id,
+            display_name: req.body.name,
+            created_at: right_now
+        }).save( async( err, playlist ) => {
+            if(err) {
+                res.send(err);
+            }
+            else {
+                res.send(playlist)
+            }
+        })
+    }
+    catch(e){
+        res.status(500).send(e);
+    }
     // const playlist = new Playlist({
 
     // })
