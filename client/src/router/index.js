@@ -6,6 +6,7 @@ import Search from "../views/Search.vue"
 import Playlist from '../components/SpotifyPlaylist.vue'
 import Home from "../components/Home.vue"
 import ArtistPlaylist from "../components/ArtistPlaylist"
+import Artist from "../components/Artist.vue"
 const routes = [
 
   {
@@ -46,6 +47,11 @@ const routes = [
     path: "/search",
     name: "Search",
     component: Search
+  },
+  {
+    path: "/artist",
+    name: "Artist",
+    component: Artist
   }
 ];
 

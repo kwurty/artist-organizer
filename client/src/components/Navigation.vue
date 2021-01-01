@@ -75,10 +75,10 @@ export default {
         }
       }
     },
-    openPlaylist() {
-      this.$store.dispatch("setActivePlaylist", playlist);
-      this.$router.push("/artists/playlist");
-    },
+    // openPlaylist() {
+    //   this.$store.dispatch("setActivePlaylist", playlist);
+    //   this.$router.push("/artists/playlist");
+    // },
   },
 };
 </script>

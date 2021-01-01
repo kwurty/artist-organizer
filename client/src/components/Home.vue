@@ -1,34 +1,32 @@
 <template>
   <div class="hello">
     <div v-if="auth" class="welcome">
-      Hello {{user.display_name}}
+      Hello {{ user.display_name }}
 
       <input v-model="playlistName" />
-      <button @click.prevent="newPlaylist"> Create Playlist </button>
+      <button @click.prevent="newPlaylist">Create Playlist</button>
       <br />
-      {{results}}
+      {{ results }}
     </div>
-    <p v-else>
-      Please login to use application
-    </p>
+    <p v-else>Please login to use application</p>
   </div>
 </template>
 
 <script>
-import Axios from 'axios'
+import Axios from "axios";
 export default {
   name: "HelloWorld",
   data() {
     return {
-      playlistName: '',
-      results: ''
-    }
+      playlistName: "",
+      results: "",
+    };
   },
   props: {
     msg: String,
   },
   computed: {
-        auth() {
+    auth() {
       return this.$store.getters.isAuthenticated;
     },
     user() {
@@ -37,15 +35,18 @@ export default {
   },
   methods: {
     async newPlaylist() {
-      console.log(this.playlistName);
-      let response = await Axios.post(`${process.env.VUE_APP_BACKEND_URI}/artist/playlist`, {
-        name: this.playlistName
-      }, {
-        withCredentials: true
-      })
+      let response = await Axios.post(
+        `${process.env.VUE_APP_BACKEND_URI}/artist/playlist`,
+        {
+          name: this.playlistName,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       this.results = response;
-    }
-  }
+    },
+  },
 };
 </script>
 

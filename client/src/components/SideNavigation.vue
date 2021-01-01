@@ -3,11 +3,16 @@
     <div>
       <div class="main">
         <div class="title">Artist Playlists</div>
-        <a class="item" @click.prevent="setPlaylist(playlist)" v-for="playlist in playlists" :key="playlist._id">
-          {{playlist}}
+        <a
+          class="item"
+          @click.prevent="setPlaylist(playlist)"
+          v-for="playlist in playlists"
+          :key="playlist._id"
+        >
+          {{ playlist.display_name }}
         </a>
       </div>
-            <div class="playlist has-text-centered">
+      <div class="playlist has-text-centered">
         <a class="button spotify-green-background is-block is-bold">
           <span class="playlist">New Playlist</span>
         </a>
@@ -23,15 +28,15 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
     playlists() {
-      return this.$store.getters.artistPlaylists;
+      return this.$store.state.artistPlaylists;
     },
   },
   methods: {
     setPlaylist(playlist) {
-      this.$store.dispatch('setArtistPlaylist', playlist);
+      this.$store.dispatch("setArtistPlaylist", playlist);
       this.$router.push(`/artistplaylists/${playlist._id}`);
-    }
-  }
+    },
+  },
 };
 </script>
 

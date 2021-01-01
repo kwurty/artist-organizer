@@ -44,30 +44,30 @@ export default {
       }
     },
     async getSpotifyPlaylistTracks(context, playlistInfo) {
-        try{
-            if (context.rootState.user.access_token != undefined) {
-                const { data: {
-        items
-                }, data: { next } } = await Axios({
-                  method: "GET",
-                  url: playlistInfo.url,
-                  headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${context.rootState.user.access_token}`,
-                  },
-                });
-                let newTracks = [...playlistInfo.allTracks, ...items];
-                if(next != null) {
-                    context.dispatch("getSpotifyPlaylistTracks", {url: next, allTracks: newTracks})
-                } else {
-                    context.commit("setSpotifyPlaylistTracks", newTracks);
-                }
-              }
+      try {
+        if (context.rootState.user.access_token != undefined) {
+          const { data: {
+            items
+          }, data: { next } } = await Axios({
+            method: "GET",
+            url: playlistInfo.url,
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${context.rootState.user.access_token}`,
+            },
+          });
+          let newTracks = [...playlistInfo.allTracks, ...items];
+          if (next != null) {
+            context.dispatch("getSpotifyPlaylistTracks", { url: next, allTracks: newTracks })
+          } else {
+            context.commit("setSpotifyPlaylistTracks", newTracks);
+          }
         }
-        catch(e){
-            console.error(e);
-        }
-      
+      }
+      catch (e) {
+        console.error(e);
+      }
+
     },
     async getSearchResults(context, search) {
       if (context.rootState.user.access_token) {
@@ -93,6 +93,24 @@ export default {
         context.commit("setSearchResults", results);
       }
     },
+
+    async getArtist(context, artistId) {
+      try {
+        if (context.rootState.user.access_token != undefined) {
+          const { data } = await Axios({
+            method: "GET",
+            url: `https://api.spotify.com/v1/artists/${artistId}`,
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${context.rootState.user.access_token}`,
+            },
+          });
+          context.commit("setArtist", data)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
   },
   getters: {
     getSpotifyPlaylists(state) {
