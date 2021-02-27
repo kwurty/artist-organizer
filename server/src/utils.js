@@ -25,7 +25,7 @@ exports.isTokenExpired = (time) => {
 }
 
 exports.validateTokenMiddle = async (req, res, next) => {
-  console.log("validate");
+  // console.log("validate");
   try {
     let user = await jwt.verify(req.cookies.user, process.env.COOKIE_KEY);
     req.user = user;
@@ -37,7 +37,7 @@ exports.validateTokenMiddle = async (req, res, next) => {
 }
 
 exports.gatherUserMiddle = async (req, res, next) => {
-  console.log("gather");
+  // console.log("gather");
   try {
     let user = await User.findOne({ spotify_id: req.user.id }).exec()
     req.user = user;
@@ -49,7 +49,7 @@ exports.gatherUserMiddle = async (req, res, next) => {
 }
 
 exports.checkExpirationMiddle = async (req, res, next) => {
-
+  // console.log(req.user); 
   try {
     let right_now = new Date();
     let expires = new Date(req.user.expires_in);
@@ -64,9 +64,12 @@ exports.checkExpirationMiddle = async (req, res, next) => {
           client_secret: process.env.CLIENT_SECRET
         }
       });
+
       let date = new Date();
-      await User.findByIdAndUpdate(req.user._id, { access_token: access_token, expires_in: date.setHours(date.getHours() + 1) });
-      req.user.access_token = access_token;
+      User.findByIdAndUpdate(req.user._id, { 'access_token': access_token, 'expires_in': date.setHours(date.getHours() + 1) }, (err, result) => {
+        if (err) console.log(err)
+        else req.user = result;
+      });
     }
   }
   catch (err) {

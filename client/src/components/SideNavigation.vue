@@ -5,7 +5,7 @@
         <div class="title">Artist Playlists</div>
         <a
           class="item"
-          @click.prevent="setPlaylist(playlist)"
+          @click.prevent="setPlaylist(playlist._id)"
           v-for="playlist in playlists"
           :key="playlist._id"
         >
@@ -13,9 +13,18 @@
         </a>
       </div>
       <div class="playlist has-text-centered">
-        <a class="button spotify-green-background is-block is-bold">
+        <a
+          class="button spotify-green-background is-block is-bold"
+          @click.prevent="createPlaylist()"
+        >
           <span class="playlist">New Playlist</span>
         </a>
+        <input
+          class="input"
+          type="text"
+          placeholder="Search artist, song, or album"
+          v-model="newPlaylist"
+        />
       </div>
     </div>
   </aside>
@@ -23,18 +32,26 @@
 
 <script>
 export default {
+  data: () => {
+    return {
+      newPlaylist: "",
+    };
+  },
   computed: {
     auth() {
       return this.$store.getters.isAuthenticated;
     },
     playlists() {
-      return this.$store.state.artistPlaylists;
+      return this.$store.getters.artistPlaylists;
     },
   },
   methods: {
     setPlaylist(playlist) {
-      this.$store.dispatch("setArtistPlaylist", playlist);
-      this.$router.push(`/artistplaylists/${playlist._id}`);
+      this.$router.push(`/artistplaylists/${playlist}`);
+    },
+    createPlaylist() {
+      this.$store.dispatch("createArtistPlaylist", this.newPlaylist);
+      this.newPlaylist = "";
     },
   },
 };

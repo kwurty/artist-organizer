@@ -11,6 +11,10 @@ const middle = [validateTokenMiddle, gatherUserMiddle];
 router.get('/playlists', middle, async (req, res, next) => {
     try {
         Playlist.find({ spotify_id: req.user.spotify_id }).exec(async (err, results) => {
+            if (err) {
+                res.send(err);
+                console.log(err);
+            }
             if (results.length > 0) {
                 res.send(results);
             }
@@ -23,15 +27,17 @@ router.get('/playlists', middle, async (req, res, next) => {
 
 router.get('/playlist', middle, async (req, res, next) => {
     try {
-        Playlist.findOne({ id: req.body.id }).exec(async (err, results) => {
+        Playlist.findById(req.query.id).exec(async (err, results) => {
             if (err) {
                 res.send(err)
             } else {
+                console.log(results);
                 res.send(results);
             }
         })
     }
     catch (e) {
+        console.log(e);
         res.status(500).send(e);
     }
 })

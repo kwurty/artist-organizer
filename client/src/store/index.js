@@ -32,7 +32,6 @@ export default createStore({
       state.artistPlaylists = playlists;
     },
     setArtistPlaylist(state, playlist) {
-      console.log(playlist)
       state.artistPlaylist = playlist;
     }
   },
@@ -53,6 +52,24 @@ export default createStore({
     setArtistPlaylist(context, payload) {
       context.commit('setArtistPlaylist', payload)
     },
+    async getArtistPlaylist(context, payload) {
+      console.log("trying");
+      let playlist = await Axios.get(`${process.env.VUE_APP_BACKEND_URI}/artist/playlist`, {
+        params: {
+          id: payload
+        },
+        withCredentials: true
+      });
+      if (playlist.data != null) {
+        context.commit('setArtistPlaylist', playlist.data)
+      }
+    },
+    async createArtistPlaylist(context, payload) {
+      let newPlaylist = await Axios.post(`${process.env.VUE_APP_BACKEND_URI}/artist/playlist`, { name: payload }, { withCredentials: true });
+      if (newPlaylist != null) {
+        context.dispatch('tryPlaylistGather');
+      }
+    }
   },
   getters: {
     user(state) {
@@ -63,6 +80,9 @@ export default createStore({
     },
     artistPlaylists(state) {
       return state.artistPlaylists;
+    },
+    artistPlaylist(state) {
+      return state.artistPlaylist;
     }
   },
   modules: {

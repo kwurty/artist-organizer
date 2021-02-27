@@ -17,9 +17,6 @@ export default {
     setSpotifyPlaylistTracks(state, tracks) {
       this.state.spotify_playlist_tracks = tracks;
     },
-    // I have zero idea why this one works with the state input
-    // but the others have to use this.state
-    // ???
     setSearchResults(state, results) {
       state.search_results = results;
     },

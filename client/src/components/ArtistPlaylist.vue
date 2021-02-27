@@ -1,26 +1,23 @@
 <template>
   <div>
-      {{playlist}}
-      hello
+    {{ playlist }}
   </div>
 </template>
 
 <script>
 export default {
-    data() {
-
+  data() {},
+  mounted() {
+    this.$store.dispatch("getArtistPlaylist", this.$route.params.id);
+  },
+  computed: {
+    playlist() {
+      return this.$store.getters.artistPlaylist;
     },
-    computed: {
-        playlist() {
-            return this.$store.artistPlaylist;
-        }
-    },
-    methods: {
-
-    },
-}
+  },
+  methods: {},
+};
 </script>
 
 <style>
-
 </style>

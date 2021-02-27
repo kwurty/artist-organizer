@@ -132,9 +132,9 @@ router.get('/loggedin', async (req, res) => {
   }
 });
 
-router.get('/checklogin', middle, async (req, res, next) => {
-  res.send(req.user);
-
+router.get('/checklogin', [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle], async (req, res, next) => {
+  const user = await req.user;
+  res.send(user);
 });
 
 router.get('/logged', async (req, res) => {

@@ -7,6 +7,7 @@ import Playlist from '../components/SpotifyPlaylist.vue'
 import Home from "../components/Home.vue"
 import ArtistPlaylist from "../components/ArtistPlaylist"
 import Artist from "../components/Artist.vue"
+import Store from "../store/index.js"
 const routes = [
 
   {
@@ -36,7 +37,15 @@ const routes = [
   {
     path: "/artistplaylists/:id",
     name: "ArtistPlaylist",
-    component: ArtistPlaylist
+    component: ArtistPlaylist,
+
+    // eslint-disable-next-line no-unused-vars
+    beforeRouteEnter: (to, from, next) => {
+
+      const id = to.params.id;
+      Store.dispatch("getArtistPlaylist", id);
+      next()
+    }
   },
   {
     path: "/recent",
