@@ -4,11 +4,11 @@
       <div class="navbar-brand">
         <a class="navbar-item" href="../">
           <img
-            src="http://bulma.io/images/bulma-logo.png"
+            src="https://placeholder.com/wp-content/uploads/2018/10/placeholder.com-logo1.png"
             alt="Bulma: a modern CSS framework based on Flexbox"
           />
         </a>
-        <router-link to="/recent" class="navbar-item cwhite"
+        <router-link to="/recent" class="navbar-item"
           >Recently Played</router-link
         >
         <router-link to="/playlists" class="navbar-item"
@@ -24,7 +24,7 @@
             />
           </div>
           <div class="control">
-            <a class="button is-info" @click="spotifySearch"> Search </a>
+            <a class="button" @click="spotifySearch"> Search </a>
           </div>
         </div>
         {{ search }}
@@ -84,32 +84,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-a {
-  .navbar-item {
-    &:hover {
-      color: #1db954;
-      background-color: #191414;
+  .navbar {
+    background: #212121;
+    padding: 1rem 2rem 1rem 2rem;
+
+    .navbar-item {
+      color: #efefef;
+
+      &:hover {
+        color: #1db954;
+      }
+    }
+    
+    .button {
+      background: #1db954;
+      border: 0;
+    }
+    .field {
+      margin-top: 10px;
     }
   }
-}
-.navbar-item {
-  color: #fff;
-  background-color: #191414;
-}
-.spotify-green-background {
-  background: #20a950;
-}
-
-.button {
-  border: 0;
-  transition: background-color 0.5s ease;
-  font-size: 14px;
-  font-weight: 700;
-
-  &:hover {
-    background-color: #1db954;
-    color: #fff;
-    transition: background-color 0.5s ease;
-  }
-}
 </style>

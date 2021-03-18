@@ -95,16 +95,19 @@ router.get('/loggedin', async (req, res) => {
     // Tokens and user information retrieved
     //check for existing user
     User.findOne({ spotify_id: userInfo.data.id }).exec(async (err, dbuser) => {
-
       // if user exists, make the JWT, store it as a cookie, and send the user info to front end
       if (dbuser != null && dbuser.spotify_id === userInfo.data.id) {
         // return with cookie
-        let userToken = await generateToken(dbuser);
-        res
-          .clearCookie("user")
-          .cookie("user", userToken)
-          .redirect(process.env.FRONTEND_URI);
-
+        User.findByIdAndUpdate(dbuser.id, {refresh_token, access_token}, async (e, dbuser) => {
+          if(e) res.status(500).send(e)
+          else {
+            let userToken = await generateToken(dbuser);
+            res
+              .clearCookie("user")
+              .cookie("user", userToken)
+              .redirect(process.env.FRONTEND_URI);
+            }
+        })
       } else {
         // user does not exist in database
         // add to the database
@@ -134,7 +137,9 @@ router.get('/loggedin', async (req, res) => {
 
 router.get('/checklogin', [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle], async (req, res, next) => {
   const user = await req.user;
-  res.send(user);
+  if (user != null ) {
+    res.send(user);
+  }
 });
 
 router.get('/logged', async (req, res) => {
