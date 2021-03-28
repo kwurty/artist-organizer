@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="is-flex is-flex-direction-row is-flex-wrap-wrap is-justify-content-flex-start is-align-content-flex-start"
-  >
+  <main>
     <div class="playlists">
       <app-spotify-playlist-list
         v-for="playlist in spotify_playlists"
@@ -9,7 +7,7 @@
         :playlist="playlist"
       />
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -41,13 +39,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.playlists {
-  flex-basis: 80%;
-  padding: 20px 0;
-  margin: auto;
-
-  display: flex;
-  flex-wrap: wrap;
-  padding: 20px 0;
+main {
+  background-color: #292b2d;
+  padding: 0 32px;
+  header {
+    h1 {
+      font-size: 2rem;
+      color: #fff;
+    }
+  }
+  .playlists {
+    display: grid;
+    direction: ltr;
+    column-gap: 24px;
+    row-gap: 24px;
+    --minimumColumnWidth: 180px;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    font-family: "Montserrat", sans-serif;
+  }
 }
 </style>

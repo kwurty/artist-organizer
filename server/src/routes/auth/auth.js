@@ -98,15 +98,15 @@ router.get('/loggedin', async (req, res) => {
       // if user exists, make the JWT, store it as a cookie, and send the user info to front end
       if (dbuser != null && dbuser.spotify_id === userInfo.data.id) {
         // return with cookie
-        User.findByIdAndUpdate(dbuser.id, {refresh_token, access_token}, async (e, dbuser) => {
-          if(e) res.status(500).send(e)
+        User.findByIdAndUpdate(dbuser.id, { refresh_token, access_token }, async (e, dbuser) => {
+          if (e) res.status(500).send(e)
           else {
             let userToken = await generateToken(dbuser);
             res
               .clearCookie("user")
               .cookie("user", userToken)
               .redirect(process.env.FRONTEND_URI);
-            }
+          }
         })
       } else {
         // user does not exist in database
@@ -137,20 +137,21 @@ router.get('/loggedin', async (req, res) => {
 
 router.get('/checklogin', [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle], async (req, res, next) => {
   const user = await req.user;
-  if (user != null ) {
+  if (user != null) {
     res.send(user);
   }
 });
 
-router.get('/logged', async (req, res) => {
-  jwt.verify(req.cookies.user, process.env.COOKIE_KEY, (err, user) => {
-    if (err) {
-      return res.status(403).send(err);
-    }
-  })
-  const dbuser = await User.findOne({ spotify_id: 'kurtyywurtyy' })
-  res.send(dbuser);
-})
+// router.get('/logged', async (req, res) => {
+//   jwt.verify(req.cookies.user, process.env.COOKIE_KEY, (err, user) => {
+//     if (err) {
+//       return res.status(403).send(err);
+//     }
+//     console.log('this is the user:', user)
+//   })
+//   const dbuser = await User.findOne({ spotify_id: 'kurtyywurtyy' })
+//   res.send(dbuser);
+// })
 
 router.get('/dbtest', async (req, res) => {
   const results = await User.findOne({ spotify_id: 'kurtyywurtyy' })

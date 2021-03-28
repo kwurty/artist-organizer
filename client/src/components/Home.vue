@@ -1,21 +1,18 @@
 <template>
-  <div class="hello">
-    <div v-if="auth" class="welcome">
-      Hello {{ user.display_name }}
+  <main>
+    <div v-if="auth" class="logged">Welcome back!</div>
+    <div v-else class="notlogged">
+      <span> Looking for an alternative way to organize your music? </span>
 
-      <input v-model="playlistName" />
-      <button @click.prevent="newPlaylist">Create Playlist</button>
-      <br />
-      {{ results }}
+      <span> Move artists into their own categories. </span>
+      <span> Never forget that newly discovered band! </span>
     </div>
-    <p v-else>Please login to use application</p>
-  </div>
+  </main>
 </template>
 
 <script>
-import Axios from "axios";
+// import Axios from "axios";
 export default {
-  name: "HelloWorld",
   data() {
     return {
       playlistName: "",
@@ -33,24 +30,33 @@ export default {
       return this.$store.state.user;
     },
   },
-  methods: {
-    async newPlaylist() {
-      let response = await Axios.post(
-        `${process.env.VUE_APP_BACKEND_URI}/artist/playlist`,
-        {
-          name: this.playlistName,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      this.results = response;
-    },
-  },
+  methods: {},
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+main {
+  font-size: 2em;
+  padding: 45px;
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(#292b2d, #292b2d),
+    url("../assets/guitarist.png");
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-blend-mode: saturation;
 
+  .notlogged {
+    display: flex;
+    flex-direction: column;
+    span {
+      padding: 20px;
+
+      &:nth-child(even) {
+        color: #1db954;
+      }
+    }
+  }
+}
 </style>

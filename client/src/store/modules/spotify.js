@@ -5,7 +5,9 @@ export default {
     spotify_playlists: null,
     spotify_playlist_tracks: null,
     artist: null,
+    artistInfo: null,
     search_results: null,
+    recently_played: null
   },
   mutations: {
     setSpotifyPlaylists(state, playlists) {
@@ -14,12 +16,19 @@ export default {
     setArtist(state, artist) {
       this.state.artist = artist;
     },
+    setArtistInfo(state, artistInfo) {
+      this.state.artistInfo = artistInfo;
+    },
     setSpotifyPlaylistTracks(state, tracks) {
       this.state.spotify_playlist_tracks = tracks;
     },
     setSearchResults(state, results) {
-      state.search_results = results;
+      this.state.search_results = results;
     },
+    setRecentlyPlayed(state, tracks) {
+      console.log(tracks);
+      this.state.recently_played = tracks;
+    }
   },
   actions: {
     async getSpotifyPlaylists(context) {
@@ -103,9 +112,70 @@ export default {
             },
           });
           context.commit("setArtist", data)
+          context.dispatch("getArtistInfo", artistId)
         }
       } catch (e) {
         console.log(e)
+      }
+    },
+
+    async getArtistInfo(context, artistId) {
+      const artistInfo = {}
+      try {
+        let relatedArtists = await Axios({
+          method: "GET",
+          url: `https://api.spotify.com/v1/artists/${artistId}/related-artists`,
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${context.rootState.user.access_token}`
+          }
+        });
+        let topTracks = await Axios({
+          method: "GET",
+          url: `https://api.spotify.com/v1/artists/${artistId}/top-tracks`,
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${context.rootState.user.access_token}`
+          },
+          params: {
+            'market': 'US'
+          }
+        });
+        let albums = await Axios({
+          method: "GET",
+          url: `https://api.spotify.com/v1/artists/${artistId}/albums`,
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${context.rootState.user.access_token}`
+          }
+        });
+        artistInfo.relatedArtists = relatedArtists.data;
+        artistInfo.topTracks = topTracks.data;
+        artistInfo.albums = albums.data;
+        context.commit("setArtistInfo", artistInfo);
+      }
+      catch (e) {
+        console.log(e)
+      }
+    },
+
+    async getRecentlyPlayed(context) {
+      try {
+        const { data } = await Axios({
+          method: "GET",
+          url: `https://api.spotify.com/v1/me/player/recently-played`,
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${context.rootState.user.access_token}`,
+          },
+          params: {
+            "limit": "20",
+          }
+        });
+
+        context.commit("setRecentlyPlayed", data);
+      } catch (e) {
+        console.log(e);
       }
     }
   },
@@ -119,5 +189,8 @@ export default {
     getSearchResultItems(state) {
       return state.search_results;
     },
+    getRecentlyPlayed(state) {
+      return state.recently_played;
+    },
   },
-};
+}

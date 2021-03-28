@@ -84,6 +84,7 @@ router.post('/playlist/add', middle, async (req, res, next) => {
                     {
                         $push: {
                             'artists': {
+                                'artistname': req.body.artistName,
                                 'artistid': req.body.artistId,
                                 'artisturl': req.body.artistUrl,
                                 'artistimage': req.body.artistImage

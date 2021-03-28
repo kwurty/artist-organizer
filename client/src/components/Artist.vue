@@ -1,14 +1,11 @@
 <template>
-  <div v-if="artist != null">
-    {{ artist }} <br />
-    <h1 class="title">{{ artist.name }}</h1>
-    <img v-if="artist.images.length > 0" :src="artist.images[0].url" />
-    <img v-else src="https://placeholder.com/640" />
-    <div>
-      <div class="dropdown" :class="[isActive ? 'is-active' : '']">
-        <div class="dropdown-trigger">
+  <div>
+    <header v-if="artist != null">
+      <h1 class="title">{{ artist.name }}</h1>
+      <div class="dropdown is-hoverable">
+        <div class="dropdown-trigger is-center">
           <button
-            class="button is-primary"
+            class="button"
             aria-haspopup="true"
             aria-controls="dropdown-menu"
             @click="toggleActive()"
@@ -30,7 +27,45 @@
           </div>
         </div>
       </div>
-    </div>
+      <img v-if="artist.images.length > 0" :src="artist.images[0].url" />
+      <img v-else src="https://placeholder.com/640" class="is-centered" />
+    </header>
+    <main v-if="artistInfo != null">
+      <h1 class="is-size-5">Artist's Albums</h1>
+      <div class="cards">
+        <div
+          class="album"
+          v-for="(album, index) in artistInfo.albums.items"
+          :key="index"
+        >
+          <div class="img-container has-text-centered">
+            <img :src="album.images[0].url" v-if="album.images[0]" />
+          </div>
+          <h1 class="is-size-6 has-text-left album-name">
+            {{ album.name }}
+          </h1>
+        </div>
+      </div>
+      <h1 class="is-size-5">Similar Artists</h1>
+      <div class="cards">
+        <div
+          class="similar-artist"
+          v-for="(artist, index) in artistInfo.relatedArtists.artists"
+          :key="index"
+        >
+          <div class="img-container has-text-centered">
+            <img v-if="artist.images" :src="artist.images[0].url" />
+          </div>
+          <h1 class="is-size-6 has-text-left artist-name">
+            <a @click.prevent="openArtist(artist.id)">
+              {{ artist.name }}
+            </a>
+          </h1>
+        </div>
+      </div>
+    </main>
+
+    <footer></footer>
   </div>
 </template>
 
@@ -47,19 +82,20 @@ export default {
     artist() {
       return this.$store.state.artist;
     },
+    artistInfo() {
+      return this.$store.state.artistInfo;
+    },
     playlists() {
       return this.$store.state.artistPlaylists;
     },
   },
   methods: {
-    toggleActive() {
-      this.isActive = !this.isActive;
-    },
     async addToPlaylist(playlist) {
-      let results = await Axios.post(
+      await Axios.post(
         `${process.env.VUE_APP_BACKEND_URI}/artist/playlist/add`,
         {
           playlistId: playlist._id,
+          artistName: this.artist.name,
           artistId: this.artist.id,
           artistUrl: this.artist.href,
           artistImage:
@@ -67,11 +103,126 @@ export default {
         },
         { withCredentials: true }
       );
-      console.log(results);
+    },
+    openArtist(artistId) {
+      this.$store.dispatch("getArtist", artistId);
+      this.$router.push("/artist");
     },
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.title {
+  color: #fff;
+  padding-top: 26px;
+  padding-left: 12px;
+}
+
+.dropdown-trigger {
+  padding-left: 12px;
+  .button {
+    background: #1db954;
+    border: 0;
+    font-weight: 400;
+  }
+}
+
+header {
+  img {
+    display: block;
+    margin: auto;
+  }
+}
+
+main {
+  h1 {
+    color: #fff;
+    padding-bottom: 12px;
+  }
+  .cards {
+    padding-bottom: 24px;
+    display: grid;
+    direction: ltr;
+    column-gap: 24px;
+    row-gap: 24px;
+    --minimumColumnWidth: 180px;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    font-family: "Montserrat", sans-serif;
+
+    .album {
+      width: 182px;
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+      background: #181818;
+      color: #fff;
+      padding: 16px;
+      transition: background-color 0.3s ease;
+      .album-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        -webkit-box-orient: vertical;
+        margin-top: auto;
+      }
+      .img-container {
+        top: 0;
+        width: 100%;
+        img {
+          display: block;
+          margin: auto;
+          width: 150px;
+          height: 150px;
+          object-fit: cover;
+          object-position: center center;
+        }
+      }
+    }
+
+    .similar-artist {
+      width: 182px;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+      background: #181818;
+      color: #fff;
+      // padding: 16px;
+      transition: background-color 0.3s ease;
+      .artist-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: auto;
+        padding-left: 8px;
+
+        a {
+          color: #fff;
+
+          &:hover {
+            color: #1db954;
+          }
+        }
+      }
+      .img-container {
+        top: 0;
+        width: 100%;
+        padding: 16px;
+        img {
+          display: block;
+          margin: auto;
+          width: 150px;
+          height: 150px;
+          object-fit: cover;
+          object-position: center center;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
 </style>

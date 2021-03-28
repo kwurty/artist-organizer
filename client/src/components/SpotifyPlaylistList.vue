@@ -1,18 +1,14 @@
 <template>
-  <li class="spotify-playlist">
-    <a @click="openPlaylist(playlist.tracks.href)">
+  <div class="spotify-playlist" @click="openPlaylist(playlist.tracks.href)">
+    <div class="img-container">
       <img v-if="playlist.images[1]" :src="playlist.images[1].url" />
       <img v-else src="https://via.placeholder.com/300" alt="" />
-    </a>
-    <div class="spotify-playlist-description">
-      <a class="title" @click="openPlaylist(playlist.tracks.href)"> 
-     {{ playlist.name }}
-     </a>
-      <section class="spotify-playlist-details">
-        By {{ playlist.owner.display_name }}
-      </section>
     </div>
-  </li>
+    <h1 class="is-size-6 has-text-left">
+      {{ playlist.name }}
+    </h1>
+    <span class="subtext">By {{ playlist.owner.display_name }}</span>
+  </div>
 </template>
 
 <script>
@@ -25,7 +21,7 @@ export default {
   },
   methods: {
     openPlaylist(url) {
-      this.$store.dispatch("getSpotifyPlaylistTracks", {url, allTracks: []});
+      this.$store.dispatch("getSpotifyPlaylistTracks", { url, allTracks: [] });
       this.$router.push("/playlists/tracks");
     },
   },
@@ -34,59 +30,44 @@ export default {
 
 <style lang="scss" scoped>
 .spotify-playlist {
-  box-sizing: border-box;
-  min-width: 100px;
-  max-width: 200px;
+  width: 100%;
+  height: 260px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  list-style: none;
-  box-sizing: border-box;
-  border: 1px solid #eee;
-  box-shadow: 0 10px 20px -7px rgba(0, 0, 0, 0.1);
-
-  img {
+  justify-content: center;
+  align-content: center;
+  background: #181818;
+  color: #fff;
+  padding: 16px;
+  transition: background-color 0.3s ease;
+  .img-container {
+    height: 100%;
     width: 100%;
-  }
-
-  .spotify-playlist-description {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: center;
-    word-wrap: break-word;
-    .title {
-      justify-content: center;
-      max-width: 300px;
+    img {
+      display: block;
+      margin: auto;
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      object-position: center center;
+      border-radius: 50%;
     }
   }
-}
+  h1 {
+    width: 100%;
+    font-size: 1.3rem;
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+  }
+  .subtext {
+    color: #888888;
+    font-size: 0.88rem;
+    font-family: "Montserrat", sans-serif;
+  }
 
-.spotify-playlist-details {
-  display: flex;
-  vertical-align: baseline;
-}
-.spotify-playlist-year,
-.spotify-playlist-rating {
-  display: flex;
-  flex-direction: column;
-}
-.title {
-  color: #1d1d1d;
-  margin-bottom: 5px;
-  font-size: 1.3rem;
-  font-weight: normal;
-  display: flex;
-  flex-wrap: wrap;
-}
-.spotify-playlist-rating {
-  align-items: flex-end;
-}
-
-@media (max-width: 536px) {
-  .spotify-playlist {
-    max-width: 300px;
+  &:hover {
+    cursor: pointer;
+    background: rgba(180, 180, 180, 0.2);
   }
 }
 </style>

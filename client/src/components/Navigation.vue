@@ -1,33 +1,32 @@
 <template>
-  <nav class="navbar has-shadow spotify-black-background">
+  <nav class="navbar spotify-black-background">
+    <a class="navbar-item" href="../">
+      <img
+        src="https://placeholder.com/wp-content/uploads/2018/10/placeholder.com-logo1.png"
+      />
+    </a>
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item" href="../">
-          <img
-            src="https://placeholder.com/wp-content/uploads/2018/10/placeholder.com-logo1.png"
-            alt="Bulma: a modern CSS framework based on Flexbox"
-          />
+        <a @click.prevent="viewRecent()" class="navbar-item" v-if="auth" x>
+          Recently Played
         </a>
-        <router-link to="/recent" class="navbar-item"
-          >Recently Played</router-link
-        >
-        <router-link to="/playlists" class="navbar-item"
+        <router-link to="/playlists" class="navbar-item" v-if="auth"
           >Spotify Playlists</router-link
         >
-        <div class="field has-addons">
+        <div class="navbar-item field has-addons" v-if="auth">
           <div class="control">
             <input
               class="input"
               type="text"
               placeholder="Search artist, song, or album"
               v-model="search"
+              @keyup.enter="spotifySearch()"
             />
           </div>
           <div class="control">
             <a class="button" @click="spotifySearch"> Search </a>
           </div>
         </div>
-        {{ search }}
         <div class="navbar-burger burger" data-target="navMenu">
           <span></span>
           <span></span>
@@ -43,7 +42,15 @@
         </a>
       </div>
       <div class="navbar-end" v-if="auth">
-        <div class="navbar-item">Hello {{ user.spotify_id }}</div>
+        <div class="navbar-item dropdown is-hoverable">
+          <div class="dropdown-trigger">Hello {{ user.spotify_id }}</div>
+
+          <div class="dropdown-menu">
+            <div class="dropdown-content">
+              <a href="#" @click.prevent="signOut()"> Sign out </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -75,33 +82,64 @@ export default {
         }
       }
     },
-    // openPlaylist() {
-    //   this.$store.dispatch("setActivePlaylist", playlist);
-    //   this.$router.push("/artists/playlist");
-    // },
+    viewRecent() {
+      this.$store.dispatch("getRecentlyPlayed");
+      this.$router.push("/recent");
+    },
+    signOut() {
+      document.cookie = "user= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+      window.location.href = "../";
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-  .navbar {
-    background: #212121;
-    padding: 1rem 2rem 1rem 2rem;
+input[type="text"] {
+  border-radius: 25px;
+}
+.navbar {
+  background: #212121;
+  padding: 1rem 2rem 1rem 2rem;
+  margin-bottom: 0;
 
-    .navbar-item {
-      color: #efefef;
+  .navbar-end {
+    top: auto;
+    align-items: center;
+    justify-content: center;
+  }
 
-      &:hover {
-        color: #1db954;
-      }
-    }
-    
-    .button {
-      background: #1db954;
-      border: 0;
-    }
-    .field {
-      margin-top: 10px;
+  .navbar-item {
+    color: #efefef;
+
+    &:hover {
+      color: #1db954;
     }
   }
+
+  .button {
+    background: #1db954;
+    border: 0;
+    border-radius: 25px;
+    color: #212121;
+  }
+  .field {
+    margin-top: 10px;
+  }
+
+  .dropdown-menu {
+    background: #212121;
+    .dropdown-content {
+      background: #212121;
+      a {
+        padding-left: 20px;
+        color: #fff;
+
+        &:hover {
+          color: #1db954;
+        }
+      }
+    }
+  }
+}
 </style>

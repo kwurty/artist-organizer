@@ -53,7 +53,6 @@ export default createStore({
       context.commit('setArtistPlaylist', payload)
     },
     async getArtistPlaylist(context, payload) {
-      console.log("trying");
       let playlist = await Axios.get(`${process.env.VUE_APP_BACKEND_URI}/artist/playlist`, {
         params: {
           id: payload

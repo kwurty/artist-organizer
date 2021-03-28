@@ -2,13 +2,20 @@
   <app-navigation> </app-navigation>
   <div class="columns" id="mail-app">
     <app-side-navigation></app-side-navigation>
-    <div class="column router hero is-fullheight">
+    <div class="column router hero is-fullheight color">
       <router-view :key="$route.path"> </router-view>
     </div>
   </div>
 </template>
 
 <style>
+.color {
+  background: #292b2d;
+}
+* {
+  font-family: "Montserrat", sans-serif;
+  color: #fff;
+}
 </style>
 
 <script>
