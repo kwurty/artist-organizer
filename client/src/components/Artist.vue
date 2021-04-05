@@ -1,8 +1,20 @@
 <template>
-  <div>
+  <div class="notification-container">
+    <transition name="fade">
+    <div class="notification is-success" :class="{'is-visible' : successful, 'is-hidden' : (!successful || successful == null)}">
+  <button class="delete" @click="toggleNotification()" ></button>
+ Artist added successfully!
+</div>
+    </transition>
+    <transition name="fade">
+    <div class="notification is-danger" :class="{'is-visible' : !successful, 'is-hidden' : (successful || successful == null)}">
+  <button class="delete" @click="toggleNotification()" ></button>
+ Error adding artist! Please try again.
+</div>
+    </transition>
     <header v-if="artist != null">
       <h1 class="title">{{ artist.name }}</h1>
-      <div class="dropdown is-hoverable">
+      <div class="dropdown is-hoverable" :class="{ 'is-active': isActive }">
         <div class="dropdown-trigger is-center">
           <button
             class="button"
@@ -28,7 +40,7 @@
         </div>
       </div>
       <img v-if="artist.images.length > 0" :src="artist.images[0].url" />
-      <img v-else src="https://placeholder.com/640" class="is-centered" />
+      <img v-else src="../assets/no-image.png" class="is-centered" />
     </header>
     <main v-if="artistInfo != null">
       <h1 class="is-size-5">Artist's Albums</h1>
@@ -75,6 +87,7 @@ export default {
   data() {
     return {
       isActive: false,
+      successful: null
     };
   },
   mounted() {},
@@ -91,7 +104,7 @@ export default {
   },
   methods: {
     async addToPlaylist(playlist) {
-      await Axios.post(
+      let results = await Axios.post(
         `${process.env.VUE_APP_BACKEND_URI}/artist/playlist/add`,
         {
           playlistId: playlist._id,
@@ -99,20 +112,48 @@ export default {
           artistId: this.artist.id,
           artistUrl: this.artist.href,
           artistImage:
-            this.artist.images[0].url || "https://placeholder.com/640",
+            this.artist.images[0].url || "../assets/no-image.png",
         },
         { withCredentials: true }
       );
+      if(results.status == 200) {
+        this.successful = true
+      } else {
+        this.successful = false
+      }
+      setTimeout(()=> {
+        this.successful = null
+      }, 2000)
     },
     openArtist(artistId) {
       this.$store.dispatch("getArtist", artistId);
       this.$router.push("/artist");
     },
+    toggleActive(){},
+    toggleNotification(){
+      this.successful = null;
+    }
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.notification-container {
+  position: relative;
+.is-visible {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+}
 .title {
   color: #fff;
   padding-top: 26px;

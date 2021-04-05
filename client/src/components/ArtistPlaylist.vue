@@ -25,7 +25,6 @@
 
 <script>
 export default {
-  data() {},
   mounted() {},
   computed: {
     playlist() {

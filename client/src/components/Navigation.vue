@@ -2,10 +2,9 @@
   <nav class="navbar spotify-black-background">
     <a class="navbar-item" href="../">
       <img
-        src="https://placeholder.com/wp-content/uploads/2018/10/placeholder.com-logo1.png"
+        src="../assets/logo.png"
       />
     </a>
-    <div class="container">
       <div class="navbar-brand">
         <a @click.prevent="viewRecent()" class="navbar-item" v-if="auth" x>
           Recently Played
@@ -52,7 +51,6 @@
           </div>
         </div>
       </div>
-    </div>
   </nav>
 </template>
 
@@ -105,8 +103,12 @@ input[type="text"] {
 
   .navbar-end {
     top: auto;
-    align-items: center;
-    justify-content: center;
+    align-items: right;
+    justify-content: right;
+  }
+
+  .navbar-brand {
+    padding-left: 10%;
   }
 
   .navbar-item {
@@ -115,6 +117,7 @@ input[type="text"] {
     &:hover {
       color: #1db954;
     }
+
   }
 
   .button {

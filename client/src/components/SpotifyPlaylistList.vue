@@ -2,7 +2,7 @@
   <div class="spotify-playlist" @click="openPlaylist(playlist.tracks.href)">
     <div class="img-container">
       <img v-if="playlist.images[1]" :src="playlist.images[1].url" />
-      <img v-else src="https://via.placeholder.com/300" alt="" />
+      <img v-else src="../assets/no-image.png" alt="" />
     </div>
     <h1 class="is-size-6 has-text-left">
       {{ playlist.name }}
