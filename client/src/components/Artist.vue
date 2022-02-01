@@ -1,16 +1,28 @@
 <template>
   <div class="notification-container">
     <transition name="fade">
-    <div class="notification is-success" :class="{'is-visible' : successful, 'is-hidden' : (!successful || successful == null)}">
-  <button class="delete" @click="toggleNotification()" ></button>
- Artist added successfully!
-</div>
+      <div
+        class="notification is-success"
+        :class="{
+          'is-visible': successful,
+          'is-hidden': !successful || successful == null,
+        }"
+      >
+        <button class="delete" @click="toggleNotification()"></button>
+        Artist added successfully!
+      </div>
     </transition>
     <transition name="fade">
-    <div class="notification is-danger" :class="{'is-visible' : !successful, 'is-hidden' : (successful || successful == null)}">
-  <button class="delete" @click="toggleNotification()" ></button>
- Error adding artist! Please try again.
-</div>
+      <div
+        class="notification is-danger"
+        :class="{
+          'is-visible': !successful,
+          'is-hidden': successful || successful == null,
+        }"
+      >
+        <button class="delete" @click="toggleNotification()"></button>
+        Error adding artist! Please try again.
+      </div>
     </transition>
     <header v-if="artist != null">
       <h1 class="title">{{ artist.name }}</h1>
@@ -87,7 +99,7 @@ export default {
   data() {
     return {
       isActive: false,
-      successful: null
+      successful: null,
     };
   },
   mounted() {},
@@ -105,41 +117,41 @@ export default {
   methods: {
     async addToPlaylist(playlist) {
       let results = await Axios.post(
-        `${process.env.VUE_APP_BACKEND_URI}/artist/playlist/add`,
+        `https://artistplaylists.herokuapp.com/artist/playlist/add`,
         {
           playlistId: playlist._id,
           artistName: this.artist.name,
           artistId: this.artist.id,
           artistUrl: this.artist.href,
-          artistImage:
-            this.artist.images[0].url || "../assets/no-image.png",
+          artistImage: this.artist.images[0].url || "../assets/no-image.png",
         },
         { withCredentials: true }
       );
-      if(results.status == 200) {
-        this.successful = true
+      if (results.status == 200) {
+        this.successful = true;
       } else {
-        this.successful = false
+        this.successful = false;
       }
-      setTimeout(()=> {
-        this.successful = null
-      }, 2000)
+      setTimeout(() => {
+        this.successful = null;
+      }, 2000);
     },
     openArtist(artistId) {
       this.$store.dispatch("getArtist", artistId);
       this.$router.push("/artist");
     },
-    toggleActive(){},
-    toggleNotification(){
+    toggleActive() {},
+    toggleNotification() {
       this.successful = null;
-    }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
@@ -147,12 +159,12 @@ export default {
 
 .notification-container {
   position: relative;
-.is-visible {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
-}
+  .is-visible {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
 }
 .title {
   color: #fff;

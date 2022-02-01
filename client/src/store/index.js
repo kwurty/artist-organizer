@@ -37,14 +37,14 @@ export default createStore({
   },
   actions: {
     async tryAutoLogin(context) {
-      let user = await Axios.get(`${process.env.VUE_APP_BACKEND_URI}/checklogin`, { withCredentials: true });
+      let user = await Axios.get(`https://artistplaylists.herokuapp.com/checklogin`, { withCredentials: true });
       if (user.spotify_id !== null) {
         context.commit('setUser', user.data);
         context.commit('setAuthed', true);
       }
     },
     async tryPlaylistGather(context) {
-      let playlists = await Axios.get(`${process.env.VUE_APP_BACKEND_URI}/artist/playlists`, { withCredentials: true });
+      let playlists = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlists`, { withCredentials: true });
       if (playlists.data != null) {
         context.commit('setArtistPlaylists', playlists.data);
       }
@@ -53,7 +53,7 @@ export default createStore({
       context.commit('setArtistPlaylist', payload)
     },
     async getArtistPlaylist(context, payload) {
-      let playlist = await Axios.get(`${process.env.VUE_APP_BACKEND_URI}/artist/playlist`, {
+      let playlist = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlist`, {
         params: {
           id: payload
         },
@@ -64,7 +64,7 @@ export default createStore({
       }
     },
     async createArtistPlaylist(context, payload) {
-      let newPlaylist = await Axios.post(`${process.env.VUE_APP_BACKEND_URI}/artist/playlist`, { name: payload }, { withCredentials: true });
+      let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, { name: payload }, { withCredentials: true });
       if (newPlaylist != null) {
         context.dispatch('tryPlaylistGather');
       }

@@ -33,7 +33,7 @@
     <div class="navbar-end" v-if="!auth">
       <a
         class="navbar-item button spotify-green-background is-block is-bold"
-        :href="process.env.VUE_APP_BACKEND_URI + '/login'"
+        href="https://artistplaylists.herokuapp.com/login"
       >
         Login
       </a>
