@@ -1,56 +1,54 @@
 <template>
   <nav class="navbar spotify-black-background">
     <a class="navbar-item" href="../">
-      <img
-        src="../assets/logo.png"
-      />
+      <img src="../assets/logo.png" />
     </a>
-      <div class="navbar-brand">
-        <a @click.prevent="viewRecent()" class="navbar-item" v-if="auth" x>
-          Recently Played
-        </a>
-        <router-link to="/playlists" class="navbar-item" v-if="auth"
-          >Spotify Playlists</router-link
-        >
-        <div class="navbar-item field has-addons" v-if="auth">
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              placeholder="Search artist, song, or album"
-              v-model="search"
-              @keyup.enter="spotifySearch()"
-            />
-          </div>
-          <div class="control">
-            <a class="button" @click="spotifySearch"> Search </a>
-          </div>
+    <div class="navbar-brand">
+      <a @click.prevent="viewRecent()" class="navbar-item" v-if="auth" x>
+        Recently Played
+      </a>
+      <router-link to="/playlists" class="navbar-item" v-if="auth"
+        >Spotify Playlists</router-link
+      >
+      <div class="navbar-item field has-addons" v-if="auth">
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            placeholder="Search artist, song, or album"
+            v-model="search"
+            @keyup.enter="spotifySearch()"
+          />
         </div>
-        <div class="navbar-burger burger" data-target="navMenu">
-          <span></span>
-          <span></span>
-          <span></span>
+        <div class="control">
+          <a class="button" @click="spotifySearch"> Search </a>
         </div>
       </div>
-      <div class="navbar-end" v-if="!auth">
-        <a
-          class="navbar-item button spotify-green-background is-block is-bold"
-          href="http://localhost:5000/login"
-        >
-          Login
-        </a>
+      <div class="navbar-burger burger" data-target="navMenu">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
-      <div class="navbar-end" v-if="auth">
-        <div class="navbar-item dropdown is-hoverable">
-          <div class="dropdown-trigger">Hello {{ user.spotify_id }}</div>
+    </div>
+    <div class="navbar-end" v-if="!auth">
+      <a
+        class="navbar-item button spotify-green-background is-block is-bold"
+        :href="process.env.VUE_APP_BACKEND_URI + '/login'"
+      >
+        Login
+      </a>
+    </div>
+    <div class="navbar-end" v-if="auth">
+      <div class="navbar-item dropdown is-hoverable">
+        <div class="dropdown-trigger">Hello {{ user.spotify_id }}</div>
 
-          <div class="dropdown-menu">
-            <div class="dropdown-content">
-              <a href="#" @click.prevent="signOut()"> Sign out </a>
-            </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-content">
+            <a href="#" @click.prevent="signOut()"> Sign out </a>
           </div>
         </div>
       </div>
+    </div>
   </nav>
 </template>
 
@@ -117,7 +115,6 @@ input[type="text"] {
     &:hover {
       color: #1db954;
     }
-
   }
 
   .button {
