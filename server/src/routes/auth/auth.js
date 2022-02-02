@@ -51,18 +51,20 @@ router.get('/login', async (req, res) => {
 router.get('/loggedin', async (req, res) => {
 
   // gather the authorization code and the returned state from Spotify redirect
-  const { code, state } = req.query;
-  const storedState = req.cookies ? req.cookies[STATEKEY] : null;
+  // ********** REMOVING THE CHECK OF COOKIE PUSHED FROM CLIENT -- WILL USE JWT TOKEN INSTEAD
+
+  // const { code, state } = req.query;
+  // const storedState = req.cookies ? req.cookies[STATEKEY] : null;
 
   // validate state matches what we had stored. If it doesn't, redirect to the front end and give the mismatch error
-  if (!state || state !== storedState) {
-    return res.redirect(
-      `${FRONTEND_URI}/#${queryString.stringify({ error: 'state_mismatch' })}`
-    );
-  }
+  // if (!state || state !== storedState) {
+  //   return res.redirect(
+  //     `${FRONTEND_URI}/#${queryString.stringify({ error: 'state_mismatch' })}`
+  //   );
+  // }
 
   // clear the state check cookie
-  res.clearCookie('STATEKEY');
+  // res.clearCookie('STATEKEY');
 
   // ASYNC - Use the authorization code to get tokens
   try {
@@ -103,11 +105,13 @@ router.get('/loggedin', async (req, res) => {
           else {
             let userToken = await generateToken(dbuser);
             res
-              .clearCookie("user")
-              .cookie("user", userToken, {
-                domain: "https://artlists.kwurty.com"
-              })
-              .redirect(process.env.FRONTEND_URI);
+
+              //AGAIN REMOVING COOKIES HERE
+              // .clearCookie("user")
+              // .cookie("user", userToken, {
+              //   domain: "https://artlists.kwurty.com"
+              // })
+              .redirect(process.env.FRONTEND_URI + '/auth?token=' + userToken);
           }
         })
       } else {
@@ -125,10 +129,10 @@ router.get('/loggedin', async (req, res) => {
           expires_in: date.setHours(date.getHours() + 1)
         }).save(async (err, dbuser) => {
           // make the JWT, store it as a cookie, and send the user info to front end 
-          let token = await generateToken(dbuser);
+          let userToken = await generateToken(dbuser);
           res
-            .cookie('user', token)
-            .redirect(process.env.FRONTEND_URI);
+            // .cookie('user', token)
+            .redirect(process.env.FRONTEND_URI + '/auth?token=' + userToken);
         })
       }
     })

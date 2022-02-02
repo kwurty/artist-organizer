@@ -33,18 +33,29 @@ export default createStore({
     },
     setArtistPlaylist(state, playlist) {
       state.artistPlaylist = playlist;
+    },
+    setCookie(token) {
+      this.$cookies.set("user_token", token);
     }
   },
   actions: {
     async tryAutoLogin(context) {
-      let user = await Axios.get(`https://artistplaylists.herokuapp.com/checklogin`, { withCredentials: true });
+      let user = await Axios.get(`https://artistplaylists.herokuapp.com/checklogin`, {
+        params: {
+          token: context.getters('getCookie')
+        }
+      });
       if (user.spotify_id !== null) {
         context.commit('setUser', user.data);
         context.commit('setAuthed', true);
       }
     },
     async tryPlaylistGather(context) {
-      let playlists = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlists`, { withCredentials: true });
+      let playlists = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlists`, {
+        params: {
+          token: context.getters('getCookie')
+        }
+      });
       if (playlists.data != null) {
         context.commit('setArtistPlaylists', playlists.data);
       }
@@ -55,16 +66,20 @@ export default createStore({
     async getArtistPlaylist(context, payload) {
       let playlist = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlist`, {
         params: {
-          id: payload
+          id: payload,
+          token: context.getters('getCookie')
         },
-        withCredentials: true
       });
       if (playlist.data != null) {
         context.commit('setArtistPlaylist', playlist.data)
       }
     },
     async createArtistPlaylist(context, payload) {
-      let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, { name: payload }, { withCredentials: true });
+      Axios.post('https://artistplaylist.herokuapp.com/artist/playlist', {})
+      let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
+        name: payload,
+        token: context.getters('getCookie')
+      });
       if (newPlaylist != null) {
         context.dispatch('tryPlaylistGather');
       }
@@ -82,6 +97,9 @@ export default createStore({
     },
     artistPlaylist(state) {
       return state.artistPlaylist;
+    },
+    getCookie() {
+      return this.$cookies.get("user_token");
     }
   },
   modules: {

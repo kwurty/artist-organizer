@@ -65,7 +65,6 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory('https://artlists.kwurty.com'),
   routes
 });
 
