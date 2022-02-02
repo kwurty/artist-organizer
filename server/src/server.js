@@ -17,7 +17,7 @@ app.use(morgan('combined'))
   .use(express.json());
 
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:8080", "https://artlists.kwurty.com");
+  res.header("Access-Control-Allow-Origin", ["http://localhost:8080", "https://artlists.kwurty.com", "https://artistplaylists.herokuapp.com"]);
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
   // res.header("Access-Control-Allow-Origin", "localhost:8080"); // update to match the domain you will make the request from
