@@ -19,12 +19,12 @@ app.use(morgan('combined'))
 
 app.use(function (req, res, next) {
   const regex = /^.+?[^\/:](?=[?\/]|$)/;
-
-  console.log(req);
+  let origin = req["origin"];
+  console.log(origin);
   let allowedDomains = ["http://localhost:8080", "https://artlists.kwurty.com", "https://artistplaylists.herokuapp.com"]
-  // if (allowedDomains.includes(origin.match(regex)[0])) {
-  // }
-  res.header("Access-Control-Allow-Origin", '*');
+  if (allowedDomains.includes(origin.match(regex)[0])) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
   // res.header("Access-Control-Allow-Origin", "localhost:8080"); // update to match the domain you will make the request from
