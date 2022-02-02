@@ -19,7 +19,8 @@ app.use(morgan('combined'))
 
 app.use(function (req, res, next) {
   const regex = /^.+?[^\/:](?=[?\/]|$)/;
-  let origin = req["origin"];
+  let origin = req.origin;
+  console.log(req.origin);
   console.log(origin);
   let allowedDomains = ["http://localhost:8080", "https://artlists.kwurty.com", "https://artistplaylists.herokuapp.com"]
   if (allowedDomains.includes(origin.match(regex)[0])) {
