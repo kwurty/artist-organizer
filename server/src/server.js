@@ -19,7 +19,8 @@ app.use(morgan('combined'))
 
 app.use(function (req, res, next) {
   const regex = /^.+?[^\/:](?=[?\/]|$)/;
-  let origin = Request.Headers["Origin"];
+  let origin = req.headers["Origin"];
+  console.log(origin);
   let allowedDomains = ["http://localhost:8080", "https://artlists.kwurty.com", "https://artistplaylists.herokuapp.com"]
   if (allowedDomains.includes(origin.match(regex)[0])) {
     res.header("Access-Control-Allow-Origin", origin);
