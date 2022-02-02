@@ -105,7 +105,7 @@ router.get('/loggedin', async (req, res) => {
             res
               .clearCookie("user")
               .cookie("user", userToken, {
-                domain: "https://artlist.kwurty.com"
+                domain: "https://artlists.kwurty.com"
               })
               .redirect(process.env.FRONTEND_URI);
           }
