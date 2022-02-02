@@ -13,7 +13,7 @@ exports.generateString = (length) => {
   return result;
 }
 
-exports.getUserInfo = async (userid) => { return User.findOne({ spotify_id: userid }).exec() }
+exports.getUserInfo = async (userid) => { console.log(`checking ${userid} info`); return User.findOne({ spotify_id: userid }).exec() }
 
 
 exports.generateToken = async (user) => { return await jwt.sign({ id: user.spotify_id }, process.env.COOKIE_KEY, { expiresIn: "7d" }); }

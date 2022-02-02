@@ -1,12 +1,12 @@
-const express = require('express')
-const morgan = require('morgan')
-const axios = require('axios')
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
+const axios = require('axios');
 // const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const app = express()
+const app = express();
 const { isTokenExpired } = require('./utils');
-require('dotenv').config()
-const mongoose = require('./db.config')
+const mongoose = require('./db.config');
 const User = require('./models/user.model');
 const router = require('./routes/router');
 
@@ -35,9 +35,8 @@ app.get('/testtoken', async (req, res) => {
 app.use('/', router)
 
 
+// console.log('dotenv', process.env);
 // Launch server
 
-if (mongoose.connections[0].name == process.env.MONGODB_DATABASE) {
-  console.log('Connected to database - now live on port ' + process.env.PORT)
-  app.listen(process.env.PORT)
-}
+app.listen(process.env.PORT)
+console.log('Connected to database - now live on port ' + process.env.PORT)
