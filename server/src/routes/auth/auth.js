@@ -104,7 +104,9 @@ router.get('/loggedin', async (req, res) => {
             let userToken = await generateToken(dbuser);
             res
               .clearCookie("user")
-              .cookie("user", userToken)
+              .cookie("user", userToken, {
+                domain: "https://artlist.kwurty.com"
+              })
               .redirect(process.env.FRONTEND_URI);
           }
         })
