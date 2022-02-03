@@ -1,13 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
-const axios = require('axios');
 // const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const app = express();
-const { isTokenExpired } = require('./utils');
-const mongoose = require('./db.config');
-const User = require('./models/user.model');
 const router = require('./routes/router');
 
 /// init middleware
