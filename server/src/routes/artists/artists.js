@@ -48,6 +48,7 @@ router.use('/playlist', async (req, res, next) => {
     try {
         let user = await jwt.verify(req.body.token, process.env.COOKIE_KEY, (err, user) => {
             console.log('good')
+            console.log(user)
             req.user = user;
             next()
         });
