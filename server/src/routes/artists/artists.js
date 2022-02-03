@@ -46,7 +46,7 @@ router.get('/playlist', async (req, res, next) => {
 })
 
 router.use('/playlist', async (req, res, next) => {
-    console.log(req);
+    // console.log(req);
     console.dir(req.body);
     next();
 })
