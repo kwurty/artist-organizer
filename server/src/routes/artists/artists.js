@@ -6,8 +6,8 @@ const queryString = require('querystring');
 const jwt = require('jsonwebtoken');
 const { verifyUserInfo, validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle } = require('../../utils');
 require('dotenv').config();
-router.use(validateTokenMiddle)
-    .use(gatherUserMiddle)
+// router.use(validateTokenMiddle)
+//     .use(gatherUserMiddle)
 
 router.get('/playlists', async (req, res, next) => {
     try {
