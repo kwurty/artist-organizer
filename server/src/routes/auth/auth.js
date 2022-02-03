@@ -64,7 +64,7 @@ router.get('/loggedin', async (req, res) => {
     code
   }
 
-  console.log(`${params} - params`)
+  console.dir(`${params} - params`)
 
   // ASYNC - Use the authorization code to get tokens
   const { data: { access_token, refresh_token, expires_in } } = await axios({
@@ -76,7 +76,7 @@ router.get('/loggedin', async (req, res) => {
     }
   });
 
-  console.log(`${data} - data
+  console.log(`
               ${access_token} - access token
               ${refresh_token} - refresh token
     `)
