@@ -25,10 +25,12 @@ exports.isTokenExpired = (time) => {
 }
 
 exports.validateTokenMiddle = async (req, res, next) => {
-  // console.log("validate");
+  console.log("validate");
+  console.log(req.query.token);
   try {
     let user = await jwt.verify(req.query.token, process.env.COOKIE_KEY);
     req.user = user;
+    console.log('gucci');
     next()
   }
   catch (err) {
@@ -37,10 +39,12 @@ exports.validateTokenMiddle = async (req, res, next) => {
 }
 
 exports.gatherUserMiddle = async (req, res, next) => {
-  // console.log("gather");
+  console.log("gather");
+  console.log(req.user);
   try {
     let user = await User.findOne({ spotify_id: req.user.id }).exec()
     req.user = user;
+    console.log('gucci');
     next();
   }
   catch (err) {
@@ -49,7 +53,8 @@ exports.gatherUserMiddle = async (req, res, next) => {
 }
 
 exports.checkExpirationMiddle = async (req, res, next) => {
-  // console.log(req.user); 
+  console.log('check expiration');
+  console.log(req.user);
   try {
     let right_now = new Date();
     let expires = new Date(req.user.expires_in);
