@@ -49,63 +49,83 @@ router.get('/login', async (req, res) => {
 })
 
 router.get('/loggedin', async (req, res) => {
-
-  // gather the authorization code and the returned state from Spotify redirect
-  // ********** REMOVING THE CHECK OF COOKIE PUSHED FROM CLIENT -- WILL USE JWT TOKEN INSTEAD
-  console.log("logged in at least...");
-
-  const { code, state } = req.query;
+  const { code } = req.query;
   // const storedState = req.cookies ? req.cookies[STATEKEY] : null;
-  const params = {
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    grant_type: 'authorization_code',
-    redirect_uri: CALLBACK_URL,
-    code
-  }
-
-  console.dir(`${params} - params`)
-
+  // validate state matches what we had stored. If it doesn't, redirect to the front end and give the mismatch error
+  // if (!state || state !== storedState) {
+  //   return res.redirect(
+  //     `${FRONTEND_URI}/#${queryString.stringify({ error: 'state_mismatch' })}`
+  //   );
+  // }
+  // clear the state check cookie
+  // res.clearCookie('STATEKEY');
   // ASYNC - Use the authorization code to get tokens
-  const { data: { access_token, refresh_token, expires_in } } = await axios({
-    url: 'https://accounts.spotify.com/api/token',
-    method: 'POST',
-    params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  });
-
-  console.log(`
-              ${access_token} - access token
-              ${refresh_token} - refresh token
-    `)
-
-  const userInfo = await axios({
-    url: 'https://api.spotify.com/v1/me',
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${access_token}`
-    }
-  });
-
-  console.log(`${userInfo.data.id} - userInfo`)
-
-  User.findOne({ spotify_id: userInfo.data.id }).exec((err, person) => {
-    if (err) res.send(err);
-    if (person) {
-      console.log(`Found someone - ${person.spotify_id} - ${userInfo.data.id} - these should match`)
-      // let userToken = await generateToken(person);
-      res.redirect(`${process.env.FRONTEND_URI}/auth?token=?${userToken}`)
-    }
-  })
-
   try {
+    const params = {
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      grant_type: 'authorization_code',
+      redirect_uri: CALLBACK_URL,
+      code
+    }
     // Axios request for access and refresh tokens
+    const { data: { access_token, refresh_token, expires_in } } = await axios({
+      url: 'https://accounts.spotify.com/api/token',
+      method: 'POST',
+      params,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
     // Axios request for user info
+    const userInfo = await axios({
+      url: 'https://api.spotify.com/v1/me',
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    });
     // Tokens and user information retrieved
     //check for existing user
-    User.findOne({ spotify_id: userInfo.data.id })
+    User.findOne({ spotify_id: userInfo.data.id }).exec(async (err, dbuser) => {
+      // if user exists, make the JWT, store it as a cookie, and send the user info to front end
+      if (dbuser != null && dbuser.spotify_id === userInfo.data.id) {
+        // return with cookie
+        User.findByIdAndUpdate(dbuser.id, { refresh_token, access_token }, async (e, dbuser) => {
+          if (e) res.status(500).send(e)
+          else {
+            let userToken = await generateToken(dbuser);
+            res
+              //AGAIN REMOVING COOKIES HERE
+              // .clearCookie("user")
+              // .cookie("user", userToken, {
+              //   domain: "https://artlists.kwurty.com"
+              // })
+              .redirect(process.env.FRONTEND_URI + '/auth?token=' + userToken);
+          }
+        })
+      } else {
+        // user does not exist in database
+        // add to the database
+        let date = new Date();
+        const newUser = new User({
+          spotify_id: userInfo.data.id,
+          display_name: userInfo.data.display_name,
+          email: userInfo.data.email,
+          href: userInfo.data.href,
+          images: userInfo.data.images,
+          refresh_token: refresh_token,
+          access_token: access_token,
+          expires_in: date.setHours(date.getHours() + 1)
+        }).save(async (err, dbuser) => {
+          // make the JWT, store it as a cookie, and send the user info to front end 
+          let userToken = await generateToken(dbuser);
+          res
+            // .cookie('user', token)
+            .redirect(process.env.FRONTEND_URI + '/auth?token=' + userToken);
+        })
+      }
+    })
   } catch (e) {
     res.status(500).json(e);
   }
