@@ -43,10 +43,28 @@ router.get('/playlist', async (req, res, next) => {
     }
 })
 
+router.use('/playlist', async (req, res, next) => {
+    try {
+        let user = await jwt.verify(req.body.token, process.env.COOKIE_KEY, (err, user) => {
+            req.user = user;
+            next()
+        });
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
+
+router.use('/playlist', async (req, res, next) => {
+    try {
+        let user = await User.findOne({ spotify_id: req.user.id }).exec()
+        req.user = user;
+        next()
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
 router.post('/playlist', async (req, res) => {
-    console.log('user ' + req.user);
-    console.log('name ' + req.body.name);
-    console.log('token' + req.body.token);
+
     try {
         let right_now = new Date();
         const newPlaylist = new Playlist({
@@ -65,9 +83,6 @@ router.post('/playlist', async (req, res) => {
     catch (e) {
         res.status(500).send(e);
     }
-    // const playlist = new Playlist({
-
-    // })
 })
 
 // finish this...
