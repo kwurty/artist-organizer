@@ -28,8 +28,12 @@ export default {
     appSideNavigation: SideNavigation,
   },
   mounted() {
-    this.$store.dispatch("tryAutoLogin");
-    this.$store.dispatch("tryPlaylistGather");
+    let d = this.$cookies.get("user_token");
+    if (d) {
+      this.$store.dispatch("setJWT", d);
+      this.$store.dispatch("tryAutoLogin");
+      this.$store.dispatch("tryPlaylistGather");
+    }
   },
 };
 </script>

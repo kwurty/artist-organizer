@@ -11,7 +11,8 @@ export default createStore({
     user: null,
     isAuthenticated: false,
     artistPlaylists: null,
-    artistPlaylist: null
+    artistPlaylist: null,
+    JWT: null
   },
   mutations: {
     authUser(state, userData) {
@@ -34,15 +35,15 @@ export default createStore({
     setArtistPlaylist(state, playlist) {
       state.artistPlaylist = playlist;
     },
-    setCookie(token) {
-      this.$cookies.set("user_token", token);
+    setJWT(state, jwt) {
+      state.JWT = jwt
     }
   },
   actions: {
     async tryAutoLogin(context) {
       let user = await Axios.get(`https://artistplaylists.herokuapp.com/checklogin`, {
         params: {
-          token: context.getters('getCookie')
+          token: context.getters.getJWT()
         }
       });
       if (user.spotify_id !== null) {
@@ -50,10 +51,13 @@ export default createStore({
         context.commit('setAuthed', true);
       }
     },
+    async setJWT(context, payload) {
+      context.commit("setJWT", payload)
+    },
     async tryPlaylistGather(context) {
       let playlists = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlists`, {
         params: {
-          token: context.getters('getCookie')
+          token: context.getters.getJWT()
         }
       });
       if (playlists.data != null) {
@@ -67,7 +71,7 @@ export default createStore({
       let playlist = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlist`, {
         params: {
           id: payload,
-          token: context.getters('getCookie')
+          token: context.getters.getJWT()
         },
       });
       if (playlist.data != null) {
@@ -78,7 +82,7 @@ export default createStore({
       Axios.post('https://artistplaylist.herokuapp.com/artist/playlist', {})
       let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
         name: payload,
-        token: context.getters('getCookie')
+        token: context.getters.getJWT()
       });
       if (newPlaylist != null) {
         context.dispatch('tryPlaylistGather');
@@ -98,8 +102,8 @@ export default createStore({
     artistPlaylist(state) {
       return state.artistPlaylist;
     },
-    getCookie() {
-      return this.$cookies.get("user_token");
+    JWT(state) {
+      return state.JWT;
     }
   },
   modules: {

@@ -8,6 +8,8 @@ import Home from "../components/Home.vue"
 import ArtistPlaylist from "../components/ArtistPlaylist"
 import Artist from "../components/Artist.vue"
 import Store from "../store/index.js"
+const routerHistory = createWebHistory()
+
 const routes = [
 
   {
@@ -41,7 +43,6 @@ const routes = [
 
     // eslint-disable-next-line no-unused-vars
     beforeRouteEnter: (to, from, next) => {
-
       const id = to.params.id;
       Store.dispatch("getArtistPlaylist", id);
       next()
@@ -65,6 +66,8 @@ const routes = [
 ];
 
 const router = createRouter({
+  mode: 'history',
+  history: routerHistory,
   routes
 });
 

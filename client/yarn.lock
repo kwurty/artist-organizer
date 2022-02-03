@@ -8878,11 +8878,6 @@
   "resolved" "https://registry.npmjs.org/vm-browserify/-/vm-browserify-1.1.2.tgz"
   "version" "1.1.2"
 
-"vue-cookies@^1.7.4":
-  "integrity" "sha512-mOS5Btr8V9zvAtkmQ7/TfqJIropOx7etDAgBywPCmHjvfJl2gFbH2XgoMghleLoyyMTi5eaJss0mPN7arMoslA=="
-  "resolved" "https://registry.npmjs.org/vue-cookies/-/vue-cookies-1.7.4.tgz"
-  "version" "1.7.4"
-
 "vue-eslint-parser@^7.1.1":
   "integrity" "sha512-8FdXi0gieEwh1IprIBafpiJWcApwrU+l2FEj8c1HtHFdNXMd0+2jUSjBVmcQYohf/E72irwAXEXLga6TQcB3FA=="
   "resolved" "https://registry.npmjs.org/vue-eslint-parser/-/vue-eslint-parser-7.1.1.tgz"
@@ -8946,6 +8941,13 @@
     "@vue/compiler-dom" "3.0.2"
     "@vue/runtime-dom" "3.0.2"
     "@vue/shared" "3.0.2"
+
+"vue3-cookies@^1.0.6":
+  "integrity" "sha512-a1UvVD0qIgxyOqjlSOwnLnqAnz8ASltugEv8yX+96i/WGZAN9fEDci7xO4HIWZE1uToUnRq9JnFhvfDCSo45OA=="
+  "resolved" "https://registry.npmjs.org/vue3-cookies/-/vue3-cookies-1.0.6.tgz"
+  "version" "1.0.6"
+  dependencies:
+    "vue" "^3.0.0"
 
 "vuex@^4.0.0-0":
   "integrity" "sha512-/+4E1dokq5cwbl4mohOqOj8h0vOLOWmLSqlqTf++bfmN9/JKWtwYfsBrzlK0sYrNfuYcpQeX0BVxQHoHXDfYZQ=="

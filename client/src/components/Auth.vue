@@ -5,7 +5,7 @@
 <script>
 export default {
   beforeMount() {
-    this.$store.commit("setCookie", $route.params.token);
+    this.$store.commit("setJWT", this.$route.params.token);
     this.$store.tryAutoLogin();
   },
   data: () => {
