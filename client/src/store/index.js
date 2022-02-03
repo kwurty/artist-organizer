@@ -41,15 +41,15 @@ export default createStore({
   },
   actions: {
     async tryAutoLogin(context) {
-      let jwt = await context.getters.JWT;
       let user = await Axios.get(`https://artistplaylists.herokuapp.com/checklogin`, {
         params: {
-          token: jwt
+          token: context.getters.JWT
         }
       });
       if (user.spotify_id !== null) {
         context.commit('setUser', user.data);
         context.commit('setAuthed', true);
+
       }
     },
     async setJWT(context, payload) {
