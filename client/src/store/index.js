@@ -80,15 +80,16 @@ export default createStore({
       }
     },
     async createArtistPlaylist(context, payload) {
+
       console.log(context, payload);
-      Axios.post('https://artistplaylist.herokuapp.com/artist/playlist', {})
-      //   let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
-      //     name: payload,
-      //     token: context.getters.JWT
-      //   });
-      //   if (newPlaylist != null) {
-      //     context.dispatch('tryPlaylistGather');
-      //   }
+      Axios.post('https://artistplaylists.herokuapp.com/artist/playlist', {});
+      // let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
+      //   name: payload,
+      //   token: context.getters.JWT
+      // });
+      // if (newPlaylist != null) {
+      //   context.dispatch('tryPlaylistGather');
+      // }
       // }
     }
   },
