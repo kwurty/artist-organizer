@@ -43,7 +43,7 @@ router.get('/playlist', async (req, res, next) => {
     }
 })
 
-router.post('/playlist', async (req, res, next) => {
+router.post('/playlist', async (req, res) => {
     console.log('user ' + req.user);
     console.log('name ' + req.body.name);
     console.log('token' + req.body.token);
