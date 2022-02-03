@@ -30,6 +30,7 @@ exports.validateTokenMiddle = async (req, res, next) => {
   console.log(req.body.token, req.body.name);
   try {
     let user = await jwt.verify(req.body.token, process.env.COOKIE_KEY);
+    console.log(user);
     req.user = user;
     console.log('gucci');
     next()
