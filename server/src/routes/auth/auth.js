@@ -145,7 +145,7 @@ router.use('/checklogin', async (req, res, next) => {
   console.log('checking token')
   console.log('token' + req.query.token);
   try {
-    let user = await jwt.verify(req.params.token, process.env.COOKIE_KEY);
+    let user = await jwt.verify(req.query.token, process.env.COOKIE_KEY);
     console.log('token is good')
     req.user = user;
     next()
