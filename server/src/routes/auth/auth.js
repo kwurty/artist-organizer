@@ -50,16 +50,7 @@ router.get('/login', async (req, res) => {
 
 router.get('/loggedin', async (req, res) => {
   const { code } = req.query;
-  // const storedState = req.cookies ? req.cookies[STATEKEY] : null;
-  // validate state matches what we had stored. If it doesn't, redirect to the front end and give the mismatch error
-  // if (!state || state !== storedState) {
-  //   return res.redirect(
-  //     `${FRONTEND_URI}/#${queryString.stringify({ error: 'state_mismatch' })}`
-  //   );
-  // }
-  // clear the state check cookie
-  // res.clearCookie('STATEKEY');
-  // ASYNC - Use the authorization code to get tokens
+
   try {
     const params = {
       client_id: CLIENT_ID,
@@ -95,13 +86,7 @@ router.get('/loggedin', async (req, res) => {
           if (e) res.status(500).send(e)
           else {
             let userToken = await generateToken(dbuser);
-            res
-              //AGAIN REMOVING COOKIES HERE
-              // .clearCookie("user")
-              // .cookie("user", userToken, {
-              //   domain: "https://artlists.kwurty.com"
-              // })
-              .redirect(process.env.FRONTEND_URI + '/auth?token=' + userToken);
+            res.redirect(process.env.FRONTEND_URI + '/auth?token=' + userToken);
           }
         })
       } else {
