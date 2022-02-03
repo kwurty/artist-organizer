@@ -91,10 +91,11 @@ router.get('/loggedin', async (req, res) => {
 
   console.log(`${userInfo} - userInfo`)
 
-  User.findOne({ spotify_id: userInfo.data.id }).exec(async (err, person) => {
+  User.findOne({ spotify_id: userInfo.data.id }).exec((err, person) => {
+    if (err) res.send(err);
     if (person) {
       console.log(`Found someone - ${person.spotify_id} - ${userInfo.data.id} - these should match`)
-      let userToken = await generateToken(person);
+      // let userToken = await generateToken(person);
       res.redirect(`${process.env.FRONTEND_URI}/auth?token=?${userToken}`)
     }
   })
@@ -104,38 +105,7 @@ router.get('/loggedin', async (req, res) => {
     // Axios request for user info
     // Tokens and user information retrieved
     //check for existing user
-    User.findOne({ spotify_id: userInfo.data.id }).exec(async (err, dbuser) => {
-      // if user exists, make the JWT, store it as a cookie, and send the user info to front end
-      if (dbuser != null && dbuser.spotify_id === userInfo.data.id) {
-        // return with cookie
-        User.findByIdAndUpdate(dbuser.id, { refresh_token, access_token }, async (e, dbuser) => {
-          if (e) res.status(500).send(e)
-          else {
-            console.log(dbuser);
-            let userToken = await generateToken(dbuser);
-            res.redirect(process.env.FRONTEND_URI + '/auth?token=' + userToken);
-          }
-        })
-      }
-
-      let date = new Date();
-      const newUser = new User({
-        spotify_id: userInfo.data.id,
-        display_name: userInfo.data.display_name,
-        email: userInfo.data.email,
-        href: userInfo.data.href,
-        images: userInfo.data.images,
-        refresh_token: refresh_token,
-        access_token: access_token,
-        expires_in: date.setHours(date.getHours() + 1)
-      }).save(async (err, dbuser) => {
-        // make the JWT, store it as a cookie, and send the user info to front end 
-        let userToken = await generateToken(dbuser);
-        res
-          // .cookie('user', token)
-          .redirect(process.env.FRONTEND_URI + '/auth?token=' + userToken);
-      })
-    })
+    User.findOne({ spotify_id: userInfo.data.id })
   } catch (e) {
     res.status(500).json(e);
   }
