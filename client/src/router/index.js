@@ -7,6 +7,7 @@ import Playlist from '../components/SpotifyPlaylist.vue'
 import Home from "../components/Home.vue"
 import ArtistPlaylist from "../components/ArtistPlaylist"
 import Artist from "../components/Artist.vue"
+import Auth from "../components/Auth.vue"
 import Store from "../store/index.js"
 const routerHistory = createWebHistory()
 
@@ -62,6 +63,11 @@ const routes = [
     path: "/artist",
     name: "Artist",
     component: Artist
+  },
+  {
+    auth: "/auth",
+    name: "Auth",
+    component: Auth
   }
 ];
 
