@@ -17,14 +17,15 @@ app.use(function (req, res, next) {
   let referer = req.get('referer');
   console.log('checking origin');
   let allowedDomains = ["http://localhost:8080", "https://artlists.kwurty.com", "https://artistplaylists.herokuapp.com"]
-  if (referer && allowedDomains.includes(referer.match(regex)[0])) {
-    res.header("Access-Control-Allow-Origin", referer);
+  // if (referer && allowedDomains.includes(referer.match(regex)[0])) {
+  //   res.header("Access-Control-Allow-Origin", referer);
 
-  }
-  if (origin && allowedDomains.includes(origin.match(regex)[0])) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", true);
+  // }
+  // if (origin && allowedDomains.includes(origin.match(regex)[0])) {
+  //   res.header("Access-Control-Allow-Origin", origin);
+  // }
+  res.header("Access-Control-Allow-Origin", '*');
+  // res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
   // res.header("Access-Control-Allow-Origin", "localhost:8080"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
