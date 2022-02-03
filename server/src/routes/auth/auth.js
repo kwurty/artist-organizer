@@ -141,13 +141,56 @@ router.get('/loggedin', async (req, res) => {
   }
 });
 
-router.get('/checklogin', async (req, res, next) => {
-  console.log(req);
-  const user = await req.user;
-  if (user != null) {
-    res.send(user);
+router.use('/checklogin', async (req, res, next) => {
+  try {
+    let user = await jwt.verify(req.params.token, process.env.COOKIE_KEY);
+    req.user = user;
+    next()
+  }
+  catch (err) {
+    res.status(500).json(err)
   }
 });
+router.use('/checklogin', async (req, res, next) => {
+  try {
+    let user = await User.findOne({ spotify_id: req.user.id }).exec()
+    req.user = user;
+    next();
+  }
+  catch (err) {
+    res.status(500).json(err);
+  }
+});
+router.get('/checklogin', async (req, res) => {
+  try {
+    let right_now = new Date();
+    let expires = new Date(req.user.expires_in);
+    if (expires < right_now) {
+      const { data: { access_token } } = await axios({
+        url: `https://accounts.spotify.com/api/token`,
+        method: 'POST',
+        params: {
+          refresh_token: req.user.refresh_token,
+          grant_type: 'refresh_token',
+          client_id: process.env.CLIENT_ID,
+          client_secret: process.env.CLIENT_SECRET
+        }
+      });
+
+      let date = new Date();
+      User.findByIdAndUpdate(req.user._id, { 'access_token': access_token, 'expires_in': date.setHours(date.getHours() + 1) }, (err, result) => {
+        if (err) console.log(err)
+        else req.user = result;
+      });
+    }
+  }
+  catch (err) {
+    // console.log(err);
+    // res.status(500).json(err);
+  }
+  res.send(user);
+});
+
 
 // router.get('/logged', async (req, res) => {
 //   jwt.verify(req.cookies.user, process.env.COOKIE_KEY, (err, user) => {

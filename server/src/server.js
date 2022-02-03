@@ -36,13 +36,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-
-app.get('/testtoken', async (req, res) => {
-  // grabbing this from middleware - test only
-  let expires = new Date(req.cookies.user.expires_in).getTime();
-  res.send(isTokenExpired(expires));
-})
-
 app.use('/', router)
 
 
