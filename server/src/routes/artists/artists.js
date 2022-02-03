@@ -46,7 +46,7 @@ router.get('/playlist', async (req, res, next) => {
 router.use('/playlist', async (req, res, next) => {
     console.log('first attempt to validate token')
     try {
-        let decoded = jwt.verify(req.body.token, env.COOKIE_KEY,);
+        let decoded = jwt.verify(req.body.token, env.COOKIE_KEY);
         console.log(decoded);
         req.user = decoded
     } catch (err) {
