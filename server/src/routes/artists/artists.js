@@ -6,9 +6,10 @@ const queryString = require('querystring');
 const jwt = require('jsonwebtoken');
 const { verifyUserInfo, validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle } = require('../../utils');
 require('dotenv').config();
-const middle = [validateTokenMiddle, gatherUserMiddle];
+router.use(validateTokenMiddle)
+    .use(gatherUserMiddle)
 
-router.get('/playlists', middle, async (req, res, next) => {
+router.get('/playlists', async (req, res, next) => {
     try {
         Playlist.find({ spotify_id: req.user.spotify_id }).exec(async (err, results) => {
             if (err) {
@@ -25,7 +26,7 @@ router.get('/playlists', middle, async (req, res, next) => {
     }
 })
 
-router.get('/playlist', middle, async (req, res, next) => {
+router.get('/playlist', async (req, res, next) => {
     try {
         Playlist.findById(req.query.id).exec(async (err, results) => {
             if (err) {
@@ -42,7 +43,7 @@ router.get('/playlist', middle, async (req, res, next) => {
     }
 })
 
-router.post('/playlist', middle, async (req, res, next) => {
+router.post('/playlist', async (req, res, next) => {
     try {
         let right_now = new Date();
         const newPlaylist = new Playlist({
@@ -67,7 +68,7 @@ router.post('/playlist', middle, async (req, res, next) => {
 })
 
 // finish this...
-router.post('/playlist/add', middle, async (req, res, next) => {
+router.post('/playlist/add', async (req, res, next) => {
 
     console.log(req.body);
 
