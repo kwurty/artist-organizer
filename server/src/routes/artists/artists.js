@@ -46,13 +46,8 @@ router.get('/playlist', async (req, res, next) => {
 })
 
 router.use('/playlist', async (req, res, next) => {
-    const token = req.body.token;
-    const name = req.body.name;
-    console.log(`token - ${req.body.token}`);
-    console.log(`name of playlist - ${req.body.name}`);
-    let decoded = jwt.verify(token, COOKIE_KEY);
-    console.log(decoded);
-    req.user = decoded;
+    console.log(req);
+    console.dir(req.body);
     next();
 })
 
