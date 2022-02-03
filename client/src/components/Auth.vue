@@ -5,8 +5,8 @@
 <script>
 export default {
   beforeMount() {
-    this.$store.commit("setJWT", this.$route.params.token);
-    this.$store.tryAutoLogin();
+    this.$store.commit("setJWT", this.$route.query.token);
+    this.$store.dispatch("tryAutoLogin");
   },
   data: () => {
     return {

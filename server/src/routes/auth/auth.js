@@ -142,6 +142,7 @@ router.get('/loggedin', async (req, res) => {
 });
 
 router.get('/checklogin', [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle], async (req, res, next) => {
+  console.log(req);
   const user = await req.user;
   if (user != null) {
     res.send(user);

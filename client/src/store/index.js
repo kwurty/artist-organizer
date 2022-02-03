@@ -43,7 +43,7 @@ export default createStore({
     async tryAutoLogin(context) {
       let user = await Axios.get(`https://artistplaylists.herokuapp.com/checklogin`, {
         params: {
-          token: context.getters.getJWT()
+          token: context.getters.JWT
         }
       });
       if (user.spotify_id !== null) {
@@ -57,7 +57,7 @@ export default createStore({
     async tryPlaylistGather(context) {
       let playlists = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlists`, {
         params: {
-          token: context.getters.getJWT()
+          token: context.getters.JWT
         }
       });
       if (playlists.data != null) {
@@ -71,7 +71,7 @@ export default createStore({
       let playlist = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlist`, {
         params: {
           id: payload,
-          token: context.getters.getJWT()
+          token: context.getters.JWT
         },
       });
       if (playlist.data != null) {
@@ -82,7 +82,7 @@ export default createStore({
       Axios.post('https://artistplaylist.herokuapp.com/artist/playlist', {})
       let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
         name: payload,
-        token: context.getters.getJWT()
+        token: context.getters.JWT
       });
       if (newPlaylist != null) {
         context.dispatch('tryPlaylistGather');

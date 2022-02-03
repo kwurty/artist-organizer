@@ -14,32 +14,19 @@ const routerHistory = createWebHistory()
 const routes = [
 
   {
-    path: "/:catchAll(.*)",
-    component: Home
-  },
-  {
-    path: "/",
-    name: "Home",
-    component: Home
-  },
-  {
     path: "/login",
-    name: "Login",
     component: Login
   },
   {
     path: "/playlists",
-    name: "Playlists",
     component: Playlists
   },
   {
     path: "/playlists/tracks",
-    name: "PlaylistTracks",
     component: Playlist
   },
   {
     path: "/artistplaylists/:id",
-    name: "ArtistPlaylist",
     component: ArtistPlaylist,
 
     // eslint-disable-next-line no-unused-vars
@@ -51,24 +38,26 @@ const routes = [
   },
   {
     path: "/recent",
-    name: "Recently Played",
     component: Recent
   },
   {
     path: "/search",
-    name: "Search",
     component: Search
   },
   {
     path: "/artist",
-    name: "Artist",
     component: Artist
   },
   {
-    auth: "/auth",
-    name: "Auth",
+    path: "/auth",
+    props: true,
     component: Auth
-  }
+  },
+  {
+    path: "",
+    component: Home,
+
+  },
 ];
 
 const router = createRouter({
