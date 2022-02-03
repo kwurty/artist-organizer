@@ -196,7 +196,7 @@ router.get('/checklogin', async (req, res) => {
     // res.status(500).json(err);
   }
   console.log('sending user');
-  res.send(user);
+  res.send(req.user);
 });
 
 
