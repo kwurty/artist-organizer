@@ -4,6 +4,7 @@ const morgan = require('morgan');
 // const cors = require('cors');
 const app = express();
 const router = require('./routes/router');
+const mongoose = require('./db.config');
 
 /// init middleware
 app.use(morgan('combined'))
