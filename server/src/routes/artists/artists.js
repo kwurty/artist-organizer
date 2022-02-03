@@ -58,6 +58,7 @@ router.use('/playlist', async (req, res, next) => {
 
 router.use('/playlist', async (req, res, next) => {
     console.log('trying to get user')
+    console.log(req.user);
     try {
         let user = await User.findOne({ spotify_id: req.user.id }).exec()
         req.user = user;
