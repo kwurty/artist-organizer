@@ -44,8 +44,10 @@ router.get('/playlist', async (req, res, next) => {
 })
 
 router.use('/playlist', async (req, res, next) => {
+    console.log('first attempt to validate token')
     try {
         let user = await jwt.verify(req.body.token, process.env.COOKIE_KEY, (err, user) => {
+            console.log('good')
             req.user = user;
             next()
         });
@@ -55,16 +57,18 @@ router.use('/playlist', async (req, res, next) => {
 })
 
 router.use('/playlist', async (req, res, next) => {
+    console.log('trying to get user')
     try {
         let user = await User.findOne({ spotify_id: req.user.id }).exec()
         req.user = user;
+        console.log('good')
         next()
     } catch (err) {
         res.status(500).json(err)
     }
 })
 router.post('/playlist', async (req, res) => {
-
+    console.log('trying to make playlist')
     try {
         let right_now = new Date();
         const newPlaylist = new Playlist({
