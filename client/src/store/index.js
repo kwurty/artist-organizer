@@ -41,6 +41,7 @@ export default createStore({
   },
   actions: {
     async tryAutoLogin(context) {
+      console.log(context.getters.JWT);
       let user = await Axios.get(`https://artistplaylists.herokuapp.com/checklogin`, {
         params: {
           token: context.getters.JWT
@@ -79,7 +80,7 @@ export default createStore({
       }
     },
     async createArtistPlaylist(context, payload) {
-      Axios.post('https://artistplaylist.herokuapp.com/artist/playlist', {})
+      // Axios.post('https://artistplaylist.herokuapp.com/artist/playlist', {})
       let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
         name: payload,
         token: context.getters.JWT

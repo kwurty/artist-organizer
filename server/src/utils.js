@@ -26,7 +26,8 @@ exports.isTokenExpired = (time) => {
 
 exports.validateTokenMiddle = async (req, res, next) => {
   console.log("validate");
-  console.log(req.query.token);
+  console.log(req);
+  console.log(req.query);
   try {
     let user = await jwt.verify(req.query.token, process.env.COOKIE_KEY);
     req.user = user;
