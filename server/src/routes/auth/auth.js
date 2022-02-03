@@ -17,22 +17,22 @@ const scopes = ['playlist-read-private', 'playlist-read-collaborative', 'user-re
 const middle = [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle];
 
 router.get('/login', async (req, res) => {
-  // Cookie exists?
-  if (req.cookies.user) {
-    // let's verify the cookie is legit
-    let verifiedUser = await validateToken(req.cookies.user);
-    if (verifiedUser) {
-      // let's see if the user is in the database
-      let userInDatabase = await getUserInfo(verifiedUser.id);
-      if (userInDatabase) {
-        // user is in the database, send the info to the front end
-        return res.send(setFrontEndUser(userInDatabase));
-      } else {
-        // user isn't in the database but they have a cookie - let's get rid of that cookie and start fresh
-        res.clearCookie('user');
-      }
-    }
-  }
+  // // Cookie exists?
+  // if (req.cookies.user) {
+  //   // let's verify the cookie is legit
+  //   let verifiedUser = await validateToken(req.cookies.user);
+  //   if (verifiedUser) {
+  //     // let's see if the user is in the database
+  //     let userInDatabase = await getUserInfo(verifiedUser.id);
+  //     if (userInDatabase) {
+  //       // user is in the database, send the info to the front end
+  //       return res.send(setFrontEndUser(userInDatabase));
+  //     } else {
+  //       // user isn't in the database but they have a cookie - let's get rid of that cookie and start fresh
+  //       res.clearCookie('user');
+  //     }
+  //   }
+  // }
   // No cookies! Move on to spotify auth
   const state = generateString(16);
   res.cookie(STATEKEY, state);
@@ -103,6 +103,7 @@ router.get('/loggedin', async (req, res) => {
         User.findByIdAndUpdate(dbuser.id, { refresh_token, access_token }, async (e, dbuser) => {
           if (e) res.status(500).send(e)
           else {
+            console.log(dbuser);
             let userToken = await generateToken(dbuser);
             res
 
