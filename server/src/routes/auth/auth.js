@@ -89,7 +89,7 @@ router.get('/loggedin', async (req, res) => {
     }
   });
 
-  console.log(`${userInfo} - userInfo`)
+  console.log(`${userInfo.data.id} - userInfo`)
 
   User.findOne({ spotify_id: userInfo.data.id }).exec((err, person) => {
     if (err) res.send(err);
