@@ -11,6 +11,7 @@ const { send } = require('process');
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const CALLBACK_URL = process.env.REDIRECT_URI;
+const COOKIE_KEY = process.env.COOKIE_KEY;
 const FRONTEND_URI = process.env.FRONTEND_URI;
 const STATEKEY = 'spotify_auth_state';
 const scopes = ['playlist-read-private', 'playlist-read-collaborative', 'user-read-private', 'user-read-email', 'user-read-recently-played']
@@ -120,7 +121,7 @@ router.use('/checklogin', async (req, res, next) => {
   console.log('checking token')
   console.log('token' + req.query.token);
   try {
-    let user = await jwt.verify(req.query.token, process.env.COOKIE_KEY);
+    let user = await jwt.verify(req.query.token, COOKIE_KEY);
     console.log('token is good')
     req.user = user;
     next()

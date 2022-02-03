@@ -9,6 +9,8 @@ require('dotenv').config();
 // router.use(validateTokenMiddle)
 //     .use(gatherUserMiddle)
 
+const COOKIE_KEY = process.env.COOKIE_KEY;
+
 router.get('/playlists', async (req, res, next) => {
     try {
         Playlist.find({ spotify_id: req.user.spotify_id }).exec(async (err, results) => {
@@ -44,13 +46,14 @@ router.get('/playlist', async (req, res, next) => {
 })
 
 router.use('/playlist', async (req, res, next) => {
-    try {
-        let user = await jwt.verify(req.body.token, process.env.COOKIE_KEY);
-        console.log(user);
-        req.user = user;
-    } catch (err) {
-        res.status(500).json(err)
-    }
+    const token = req.body.token;
+    const name = req.body.name;
+    console.log(`token - ${req.body.token}`);
+    console.log(`name of playlist - ${req.body.name}`);
+    let decoded = jwt.verify(token, COOKIE_KEY);
+    console.log(decoded);
+    req.user = decoded;
+    next();
 })
 
 router.use('/playlist', async (req, res, next) => {
