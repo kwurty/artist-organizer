@@ -57,11 +57,11 @@ router.get('/loggedin', async (req, res) => {
   // const storedState = req.cookies ? req.cookies[STATEKEY] : null;
 
   // validate state matches what we had stored. If it doesn't, redirect to the front end and give the mismatch error
-  if (!state || state !== storedState) {
-    return res.redirect(
-      `${FRONTEND_URI}/#${queryString.stringify({ error: 'state_mismatch' })}`
-    );
-  }
+  // if (!state || state !== storedState) {
+  //   return res.redirect(
+  //     `${FRONTEND_URI}/#${queryString.stringify({ error: 'state_mismatch' })}`
+  //   );
+  // }
 
   // clear the state check cookie
   // res.clearCookie('STATEKEY');
