@@ -64,6 +64,8 @@ router.get('/loggedin', async (req, res) => {
     code
   }
 
+  console.log(`${params} - params`)
+
   // ASYNC - Use the authorization code to get tokens
   const { data: { access_token, refresh_token, expires_in } } = await axios({
     url: 'https://accounts.spotify.com/api/token',
@@ -74,6 +76,11 @@ router.get('/loggedin', async (req, res) => {
     }
   });
 
+  console.log(`${data} - data
+              ${access_token} - access token
+              ${refresh_token} - refresh token
+    `)
+
   const userInfo = await axios({
     url: 'https://api.spotify.com/v1/me',
     method: 'GET',
@@ -81,6 +88,8 @@ router.get('/loggedin', async (req, res) => {
       'Authorization': `Bearer ${access_token}`
     }
   });
+
+  console.log(`${userInfo} - userInfo`)
 
   User.findOne({ spotify_id: userInfo.data.id }).exec(async (err, person) => {
     if (person) {
