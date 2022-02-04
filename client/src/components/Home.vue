@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main v-bind:class="{ background: !auth }">
     <div v-if="auth" class="logged">Welcome back!</div>
     <div v-else class="notlogged">
       <span> Looking for an alternative way to organize your music? </span>
@@ -41,12 +41,14 @@ main {
   padding: 45px;
   height: 100%;
   width: 100%;
-  background-image: linear-gradient(#292b2d, #292b2d),
-    url("../assets/guitarist.png");
   background-position: right bottom;
   background-repeat: no-repeat;
   background-blend-mode: saturation;
 
+  .background {
+    background-image: linear-gradient(#292b2d, #292b2d),
+      url("../assets/guitarist.png");
+  }
   .notlogged {
     display: flex;
     flex-direction: column;

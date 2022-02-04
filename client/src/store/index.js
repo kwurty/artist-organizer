@@ -49,7 +49,6 @@ export default createStore({
       if (user.spotify_id !== null) {
         context.commit('setUser', user.data);
         context.commit('setAuthed', true);
-
       }
     },
     async setJWT(context, payload) {
@@ -83,7 +82,7 @@ export default createStore({
       let token = context.getters.JWT;
 
       console.log(context, payload);
-      Axios.post('https://artistplaylists.herokuapp.com/artist/playlist', {
+      let newPlaylist = Axios.post('https://artistplaylists.herokuapp.com/artist/playlist', {
         name: payload,
         token: token
       });
@@ -91,9 +90,9 @@ export default createStore({
       //   name: payload,
       //   token: context.getters.JWT
       // });
-      // if (newPlaylist != null) {
-      //   context.dispatch('tryPlaylistGather');
-      // }
+      if (newPlaylist != null) {
+        context.dispatch('tryPlaylistGather');
+      }
       // }
     }
   },

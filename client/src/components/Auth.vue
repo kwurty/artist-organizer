@@ -5,8 +5,12 @@
 <script>
 export default {
   beforeMount() {
-    this.$store.commit("setJWT", this.$route.query.token);
-    this.$store.dispatch("tryAutoLogin");
+    if (this.$route.query.token) {
+      this.$store.commit("setJWT", this.$route.query.token);
+      this.$cookies.set("user_token", this.$route.query.token);
+      this.$store.dispatch("tryAutoLogin");
+      window.location.href = "../";
+    }
   },
   data: () => {
     return {

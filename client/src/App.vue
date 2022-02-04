@@ -21,16 +21,23 @@
 <script>
 import Navigation from "./components/Navigation.vue";
 import SideNavigation from "./components/SideNavigation.vue";
+import { useCookies } from "vue3-cookies";
+
 export default {
+  setup() {
+    const { cookies } = useCookies();
+    return { cookies };
+  },
   data() {},
   components: {
     appNavigation: Navigation,
     appSideNavigation: SideNavigation,
   },
   mounted() {
-    let d = this.$cookies.get("user_token");
-    if (d) {
-      this.$store.dispatch("setJWT", d);
+    let token = this.$cookies.get("user_token");
+
+    if (token) {
+      this.$store.dispatch("setJWT", token);
       this.$store.dispatch("tryAutoLogin");
       this.$store.dispatch("tryPlaylistGather");
     }

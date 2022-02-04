@@ -12,7 +12,19 @@ require('dotenv').config();
 
 const COOKIE_KEY = process.env.COOKIE_KEY;
 
-router.get('/playlists', async (req, res, next) => {
+router.use('/', async (req, res, next) => {
+    try {
+        let user = await jwt.verify(req.query.token, COOKIE_KEY);
+        console.log('token is good')
+        req.user = user;
+        next()
+    } catch (err) {
+        res.status(500).json(err)
+    }
+
+})
+
+router.get('/playlists', async (req, res) => {
     try {
         Playlist.find({ spotify_id: req.user.spotify_id }).exec(async (err, results) => {
             if (err) {
@@ -28,24 +40,6 @@ router.get('/playlists', async (req, res, next) => {
         res.status(500).send(e);
     }
 })
-
-router.get('/playlist', async (req, res, next) => {
-    try {
-        Playlist.findById(req.query.id).exec(async (err, results) => {
-            if (err) {
-                res.send(err)
-            } else {
-                console.log(results);
-                res.send(results);
-            }
-        })
-    }
-    catch (e) {
-        console.log(e);
-        res.status(500).send(e);
-    }
-})
-
 
 router.post('/playlist', async (req, res) => {
     let id = jwt.verify(req.body.token, COOKIE_KEY);

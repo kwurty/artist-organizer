@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar spotify-black-background">
-    <a class="navbar-item" href="../">
+    <a class="navbar-img" href="../">
       <img src="../assets/logo.png" />
     </a>
     <div class="navbar-brand">
@@ -83,7 +83,7 @@ export default {
       this.$router.push("/recent");
     },
     signOut() {
-      document.cookie = "user= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+      this.$cookies.remove("user_token");
       window.location.href = "../";
     },
   },
@@ -115,6 +115,11 @@ input[type="text"] {
     &:hover {
       color: #1db954;
     }
+  }
+
+  .navbar-img img {
+    max-width: 150px;
+    padding-top: 10px;
   }
 
   .button {
