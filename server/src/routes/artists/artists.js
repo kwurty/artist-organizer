@@ -47,25 +47,24 @@ router.get('/playlist', async (req, res, next) => {
 
 
 router.post('/playlist', async (req, res) => {
-    console.log(req.body);
-    console.log('trying to make playlist')
-    try {
-        let right_now = new Date();
-        const newPlaylist = new Playlist({
-            spotify_id: req.user.spotify_id,
-            display_name: req.body.name,
-            created_at: right_now
-        }).save(async (err, playlist) => {
-            if (err) {
-                res.send(err);
-            }
-            else {
-                res.send(playlist)
-            }
+    let id = jwt.verify(req.body.token, COOKIE_KEY);
+    if (id) {
+        User.findOne({ spotify_id: id }).exec(async (err, results) => {
+            if (err) res.status(500).json(err);
+            let right_now = new Date();
+            const newPlaylist = new Playlist({
+                spotify_id: req.user.spotify_id,
+                display_name: req.body.name,
+                created_at: right_now
+            }).save(async (err, playlist) => {
+                if (err) {
+                    res.send(err);
+                }
+                else {
+                    res.send(playlist)
+                }
+            })
         })
-    }
-    catch (e) {
-        res.status(500).send(e);
     }
 })
 
