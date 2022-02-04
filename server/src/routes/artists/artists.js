@@ -51,22 +51,22 @@ router.post('/playlist', async (req, res) => {
     let id = jwt.verify(req.body.token, COOKIE_KEY);
     if (id) {
         console.log(id);
-        User.findOne({ spotify_id: id }).exec(async (err, results) => {
-            if (err) res.status(500).json(err);
-            let right_now = new Date();
-            const newPlaylist = new Playlist({
-                spotify_id: id,
-                display_name: req.body.name,
-                created_at: right_now
-            }).save(async (err, playlist) => {
-                if (err) {
-                    res.send(err);
-                }
-                else {
-                    res.send(playlist)
-                }
-            })
-        })
+        // User.findOne({ spotify_id: id }).exec(async (err, results) => {
+        //     if (err) res.status(500).json(err);
+        //     let right_now = new Date();
+        //     const newPlaylist = new Playlist({
+        //         spotify_id: id,
+        //         display_name: req.body.name,
+        //         created_at: right_now
+        //     }).save(async (err, playlist) => {
+        //         if (err) {
+        //             res.send(err);
+        //         }
+        //         else {
+        //             res.send(playlist)
+        //         }
+        //     })
+        // })
     }
 })
 
