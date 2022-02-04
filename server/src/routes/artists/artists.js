@@ -12,7 +12,8 @@ require('dotenv').config();
 
 const COOKIE_KEY = process.env.COOKIE_KEY;
 
-router.use('/', async (req, res, next) => {
+router.use(async (req, res, next) => {
+    console.log('testing token')
     try {
         let user = await jwt.verify(req.query.token, COOKIE_KEY);
         console.log('token is good')
