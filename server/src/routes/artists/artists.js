@@ -14,8 +14,10 @@ const COOKIE_KEY = process.env.COOKIE_KEY;
 
 router.use(async (req, res, next) => {
     console.log('testing token')
+    console.log(`Query - ${req.query}`)
+    console.log(`Body - ${req.body}`)
     try {
-        let user = await jwt.verify(req.query.token, COOKIE_KEY);
+        let user = await jwt.verify(req.body.token, COOKIE_KEY);
         console.log('token is good')
         req.user = user;
         next()
