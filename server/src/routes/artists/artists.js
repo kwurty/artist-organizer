@@ -1,6 +1,7 @@
 const Axios = require('axios');
 const express = require('express');
 const router = express.Router();
+const User = require('../../models/user.model');
 const Playlist = require('../../models/playlist.model');
 const queryString = require('querystring');
 const jwt = require('jsonwebtoken');
