@@ -51,7 +51,7 @@ router.post('/playlist', async (req, res) => {
     let id = jwt.verify(req.body.token, COOKIE_KEY);
     if (id) {
         console.log(id);
-
+        let right_now = new Date();
         const newPlaylist = new Playlist({
             spotify_id: id,
             display_name: req.body.name,
