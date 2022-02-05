@@ -37,6 +37,7 @@ export default {
     let token = this.$cookies.get("user_token");
 
     if (token) {
+      console.log("mounted gather");
       this.$store.dispatch("setJWT", token);
       this.$store.dispatch("tryAutoLogin");
       this.$store.dispatch("tryPlaylistGather");

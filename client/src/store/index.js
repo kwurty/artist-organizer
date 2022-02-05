@@ -55,14 +55,18 @@ export default createStore({
       context.commit("setJWT", payload)
     },
     async tryPlaylistGather(context) {
-      let playlists = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlists`, {
+      console.log('trying gather');
+      let token = context.getters.JWT;
+
+      Axios.get('https://artistplaylists.herokuapp.com/artist/playlists', {
         params: {
-          token: context.getters.JWT
+          token
         }
-      });
-      if (playlists.data != null) {
-        context.commit('setArtistPlaylists', playlists.data);
-      }
+      }).then((res, err) => {
+        if (err) return console.log(err)
+        console.log(res);
+
+      })
     },
     setArtistPlaylist(context, payload) {
       context.commit('setArtistPlaylist', payload)
