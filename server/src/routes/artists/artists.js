@@ -60,7 +60,7 @@ router.post('/playlist', async (req, res) => {
 })
 
 router.get('/playlist', async (req, res) => {
-    Playlist.findById(req.query.id).exec(async (err, res) => {
+    Playlist.findById(req.query.id).exec(async (err, results) => {
         if (err) return res.status(500).json(err)
 
         res.send(results);
