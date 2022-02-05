@@ -84,9 +84,9 @@ export default createStore({
       }
     },
     async createArtistPlaylist(context, payload) {
-      let token = context.getters.JWT;
+      let token = await context.getters.JWT;
 
-      console.log(context, payload);
+      console.log('token - ' + token, 'payload - ' + payload);
       let newPlaylist = Axios.post('https://artistplaylists.herokuapp.com/artist/playlist', {
         name: payload,
         token: token
