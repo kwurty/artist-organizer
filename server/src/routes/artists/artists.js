@@ -12,7 +12,7 @@ require('dotenv').config();
 
 const COOKIE_KEY = process.env.COOKIE_KEY;
 
-router.use(async (req, res, next) => {
+router.use('/', async (req, res, next) => {
     console.log('got the middleware')
     try {
         let token = req.body.token ? req.body.token : req.query.token;
