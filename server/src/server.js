@@ -9,13 +9,13 @@ const { isTokenExpired } = require('./utils');
 const mongoose = require('./db.config');
 const User = require('./models/user.model');
 const router = require('./routes/router');
+const bodyParser = require('body-parser');
 
 /// init middleware
 app.use(morgan('combined'))
   // .use(cors())
   .use(cookieParser())
-  .use(express.json());
-
+  .use(bodyParser.urlencoded({ extended: true }));
 
 app.use(function (req, res, next) {
   const regex = /^.+?[^\/:](?=[?\/]|$)/;
