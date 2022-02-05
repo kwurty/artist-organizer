@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const { generateString, validateToken, validateTokenMiddle, generateToken, setFrontEndUser, getUserInfo, gatherUserMiddle, checkExpirationMiddle } = require('../../utils');
 const COOKIE_KEY = process.env.COOKIE_KEY;
 
+router.use(express.json());
 
 router.use('/playlists', async (req, res, next) => {
     console.log('- Artist middleware - checking token')
