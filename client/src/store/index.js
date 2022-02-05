@@ -65,12 +65,12 @@ export default createStore({
         }
       }).then((res, err) => {
         if (err) return console.log(err)
-        console.log(res);
+        context.dispatch('setArtistPlaylists', res.data);
 
       })
     },
     setArtistPlaylist(context, payload) {
-      context.commit('setArtistPlaylist', payload)
+      context.dispatch('setArtistPlaylist', payload)
     },
     async getArtistPlaylist(context, payload) {
       let playlist = await Axios.get(`https://artistplaylists.herokuapp.com/artist/playlist`, {
@@ -85,25 +85,43 @@ export default createStore({
     },
     async createArtistPlaylist(context, payload) {
       let token = await context.getters.JWT;
+      // let params = new URLSearchParams();
 
-      console.log('token - ' + token, 'payload - ' + payload);
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-      let newPlaylist = await (Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`), {
-        name: payload,
-        token
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      // let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
-      //   name: payload,
-      //   token: context.getters.JWT
-      // });
-      if (newPlaylist != null) {
-        // context.dispatch('tryPlaylistGather');
-      }
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("name", payload);
+      urlencoded.append("token", token);
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+      };
+
+      fetch("https://artistplaylists.herokuapp.com/artist/playlist", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+
+
+      // params.append('token', token);
+      // params.append('name', payload);
+      // let newPlaylist = await (Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`), params)
+      // // let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
+      // //   name: payload,
+      // //   token: context.getters.JWT
+      // // });
+      // if (newPlaylist != null) {
+      //   // context.dispatch('tryPlaylistGather');
       // }
+      // }
+    },
+    setArtistPlaylists(context, payload) {
+      context.commit('setArtistPlaylists', payload)
     }
   },
   getters: {

@@ -34,21 +34,11 @@ router.get('/playlists', async (req, res, next) => {
             res.send(results);
         }
     });
-
-
 })
 router.use('/playlist', express.json(), async (req, res, next) => {
-    console.log('- Playlist Post Middleware - checking token')
-    console.log(` - req body - ${req.body}`);
-    console.log(` - req body json - ${JSON.stringify(req.body)}`);
-    console.log(`- Playlist Post Middleware - token - ${req.body.token}`)
-    console.log(`- Playlist Post Middleware - name - ${req.body.name}`)
     let token = req.body.token ? req.body.token : req.query.token;
-    console.log(`- Playlist Post Middleware - token - ${token}`);
-
     try {
         let user = await jwt.verify(token, COOKIE_KEY);
-        console.log(`- Playlist Post Middleware - user.id - ${user.id}`)
         req.user = user;
         next()
     }
@@ -58,7 +48,6 @@ router.use('/playlist', express.json(), async (req, res, next) => {
 });
 
 router.post('/playlist', async (req, res) => {
-    console.log(`- Playlist post - req.user.id - ${req.user.id}`);
     let newPlaylist = new Playlist({
         spotify_id: req.user.id,
         display_name: req.body.name,
@@ -70,54 +59,12 @@ router.post('/playlist', async (req, res) => {
     })
 })
 
-// router.get('/playlists', async (req, res) => {
-//     console.log('checking expiration date')
-//     try {
-//         let right_now = new Date();
-//         let expires = new Date(req.user.expires_in);
-//         if (expires < right_now) {
-//             console.log('expired');
-//             const { data: { access_token } } = await axios({
-//                 url: `https://accounts.spotify.com/api/token`,
-//                 method: 'POST',
-//                 params: {
-//                     refresh_token: req.user.refresh_token,
-//                     grant_type: 'refresh_token',
-//                     client_id: process.env.CLIENT_ID,
-//                     client_secret: process.env.CLIENT_SECRET
-//                 }
-//             });
+router.get('/playlist', async (req, res) => {
+    Playlist.findById(req.query.id).exec(async (err, res) => {
+        if (err) return res.status(500).json(err)
 
-//             let date = new Date();
-//             User.findByIdAndUpdate(req.user._id, { 'access_token': access_token, 'expires_in': date.setHours(date.getHours() + 1) }, (err, result) => {
-//                 if (err) console.log(err)
-//                 else req.user = result;
-//             });
-//         }
-//     }
-//     catch (err) {
-//         // console.log(err);
-//         // res.status(500).json(err);
-//     }
-//     console.log('sending user');
-//     res.send(req.user);
-// });
-
-
-// router.get('/logged', async (req, res) => {
-//   jwt.verify(req.cookies.user, process.env.COOKIE_KEY, (err, user) => {
-//     if (err) {
-//       return res.status(403).send(err);
-//     }
-//     console.log('this is the user:', user)
-//   })
-//   const dbuser = await User.findOne({ spotify_id: 'kurtyywurtyy' })
-//   res.send(dbuser);
-// })
-
-router.get('/dbtest', async (req, res) => {
-    const results = await User.findOne({ spotify_id: 'kurtyywurtyy' })
-    res.send(results);
+        res.send(results);
+    })
 })
 
 module.exports = router;
