@@ -21,7 +21,6 @@ app.use(function (req, res, next) {
   const regex = /^.+?[^\/:](?=[?\/]|$)/;
   let origin = req.get('origin');
   let referer = req.get('referer');
-  console.log('checking origin');
   let allowedDomains = ["http://localhost:8080", "https://artlists.kwurty.com", "https://artistplaylists.herokuapp.com"]
   if (referer && allowedDomains.includes(referer.match(regex)[0])) {
     res.header("Access-Control-Allow-Origin", referer);

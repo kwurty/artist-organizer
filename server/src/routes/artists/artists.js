@@ -25,7 +25,7 @@ router.use('/playlists', async (req, res, next) => {
 
     try {
         let user = await jwt.verify(req.query.token, COOKIE_KEY);
-        console.log(`user - ${user}`)
+        console.log(`user - ${user.spotify_id}`)
         console.log('token is good')
         req.user = user;
         next()
