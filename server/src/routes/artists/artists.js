@@ -26,7 +26,6 @@ router.use(async (req, res, next) => {
     try {
         let user = await jwt.verify(req.query.token, COOKIE_KEY);
         console.log(`user - ${user.id}`)
-        console.log('token is good')
         req.user = user;
         next()
     }
@@ -36,7 +35,7 @@ router.use(async (req, res, next) => {
 });
 
 router.get('/playlists', async (req, res, next) => {
-    console.log(req.params);
+    console.log(` req user id - ${req.user.id}`);
     try {
         Playlist.find({ spotify_id: req.user.id }).exec(async (err, results) => {
             if (err) {
