@@ -39,20 +39,10 @@ router.get('/playlists', async (req, res, next) => {
 })
 
 router.post('/playlist', async (req, res) => {
+    console.log(`Playlist post - ${req.body.token}`)
     let id = jwt.verify(req.body.token, COOKIE_KEY);
     if (id) {
         console.log(id);
-        let right_now = new Date();
-        const newPlaylist = new Playlist({
-            spotify_id: id,
-            display_name: req.body.name,
-            created_at: right_now
-        }).save((err, playlist) => {
-            if (err) return res.status(500).json(err)
-            res.send(playlist);
-        })
-
-
     }
 })
 

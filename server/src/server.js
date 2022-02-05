@@ -22,11 +22,10 @@ app.use(function (req, res, next) {
   let origin = req.get('origin');
   let referer = req.get('referer');
   let allowedDomains = ["http://localhost:8080", "https://artlists.kwurty.com", "https://artistplaylists.herokuapp.com"]
-  if (referer && allowedDomains.includes(referer.match(regex)[0])) {
+  if (referer && !origin && allowedDomains.includes(referer.match(regex)[0])) {
     res.header("Access-Control-Allow-Origin", referer);
 
-  }
-  if (origin && allowedDomains.includes(origin.match(regex)[0])) {
+  } else if (origin && allowedDomains.includes(origin.match(regex)[0])) {
     res.header("Access-Control-Allow-Origin", origin);
   }
   res.header("Access-Control-Allow-Credentials", true);
