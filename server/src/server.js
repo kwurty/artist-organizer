@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 /// init middleware
 app.use(morgan('combined'))
   .use(cookieParser())
+  .use(bodyParser.urlencoded({ extended: true }))
   .use(express.json());
 // .use(bodyParser.urlencoded({ extended: true }));
 
