@@ -18,14 +18,14 @@ const scopes = ['playlist-read-private', 'playlist-read-collaborative', 'user-re
 const middle = [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle];
 
 
-router.use('/playlists', async (req, res, next) => {
+router.use(async (req, res, next) => {
     console.log('checking token')
     let token = req.body.token ? req.body.token : req.query.token;
     console.log(`token - ${token}`);
 
     try {
         let user = await jwt.verify(req.query.token, COOKIE_KEY);
-        console.log(`user - ${user.spotify_id}`)
+        console.log(`user - ${user.id}`)
         console.log('token is good')
         req.user = user;
         next()
@@ -38,7 +38,7 @@ router.use('/playlists', async (req, res, next) => {
 router.get('/playlists', async (req, res, next) => {
     console.log(req.params);
     try {
-        Playlist.find({ spotify_id: req.user.spotify_id }).exec(async (err, results) => {
+        Playlist.find({ spotify_id: req.user.id }).exec(async (err, results) => {
             if (err) {
                 res.send(err);
                 console.log(err);
