@@ -96,7 +96,7 @@ export default createStore({
       //   token: context.getters.JWT
       // });
       if (newPlaylist != null) {
-        context.dispatch('tryPlaylistGather');
+        // context.dispatch('tryPlaylistGather');
       }
       // }
     }
