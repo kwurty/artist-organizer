@@ -6,7 +6,7 @@ const { generateString, validateToken, validateTokenMiddle, generateToken, setFr
 const COOKIE_KEY = process.env.COOKIE_KEY;
 
 
-router.use(async (req, res, next) => {
+router.use('/artist', async (req, res, next) => {
     console.log('- Artist middleware - checking token')
     let token = req.body.token ? req.body.token : req.query.token;
     console.log(`token - ${token}`);
