@@ -13,8 +13,10 @@ require('dotenv').config();
 const COOKIE_KEY = process.env.COOKIE_KEY;
 
 router.use(async (req, res, next) => {
+    console.log('got the middleware')
     try {
         let token = req.body.token ? req.body.token : req.query.token;
+        console.log(`token - ${token}`)
         let user = await jwt.verify(token, COOKIE_KEY);
         console.log('token is good')
         req.user = user;
