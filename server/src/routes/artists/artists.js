@@ -47,7 +47,7 @@ router.use('/playlist', express.json(), async (req, res, next) => {
     console.log(`- Playlist Post Middleware - token - ${token}`);
 
     try {
-        let user = await jwt.verify(req.query.token, COOKIE_KEY);
+        let user = await jwt.verify(token, COOKIE_KEY);
         console.log(`- Playlist Post Middleware - user.id - ${user.id}`)
         req.user = user;
         next()
