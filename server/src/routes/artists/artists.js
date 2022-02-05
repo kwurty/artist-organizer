@@ -1,21 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const User = require('../../models/user.model');
-const queryString = require('querystring');
+const Playlist = require('../../models/playlist.model');
 const jwt = require('jsonwebtoken');
-const axios = require('axios');
-
 const { generateString, validateToken, validateTokenMiddle, generateToken, setFrontEndUser, getUserInfo, gatherUserMiddle, checkExpirationMiddle } = require('../../utils');
-const { send } = require('process');
-
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const CALLBACK_URL = process.env.REDIRECT_URI;
 const COOKIE_KEY = process.env.COOKIE_KEY;
-const FRONTEND_URI = process.env.FRONTEND_URI;
-const STATEKEY = 'spotify_auth_state';
-const scopes = ['playlist-read-private', 'playlist-read-collaborative', 'user-read-private', 'user-read-email', 'user-read-recently-played']
-const middle = [validateTokenMiddle, gatherUserMiddle, checkExpirationMiddle];
 
 
 router.use(async (req, res, next) => {
