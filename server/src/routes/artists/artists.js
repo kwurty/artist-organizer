@@ -40,6 +40,7 @@ router.get('/playlists', async (req, res, next) => {
 router.use('/playlist', express.json(), async (req, res, next) => {
     console.log('- Playlist Post Middleware - checking token')
     console.log(` - req body - ${req.body}`);
+    console.log(` - req body json - ${JSON.stringify(req.body)}`);
     console.log(`- Playlist Post Middleware - token - ${req.body.token}`)
     console.log(`- Playlist Post Middleware - name - ${req.body.name}`)
     let token = req.body.token ? req.body.token : req.query.token;
