@@ -49,6 +49,7 @@ export default createStore({
       if (user.spotify_id !== null) {
         context.commit('setUser', user.data);
         context.commit('setAuthed', true);
+        context.dispatch('tryPlaylistGather');
       }
     },
     async setJWT(context, payload) {
