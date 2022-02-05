@@ -87,10 +87,15 @@ export default createStore({
       let token = await context.getters.JWT;
 
       console.log('token - ' + token, 'payload - ' + payload);
-      let newPlaylist = Axios.post('https://artistplaylists.herokuapp.com/artist/playlist', {
+
+      let newPlaylist = await (Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`), {
         name: payload,
-        token: token
-      });
+        token
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       // let newPlaylist = await Axios.post(`https://artistplaylists.herokuapp.com/artist/playlist`, {
       //   name: payload,
       //   token: context.getters.JWT
