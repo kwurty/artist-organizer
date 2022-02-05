@@ -118,11 +118,8 @@ router.get('/loggedin', async (req, res) => {
 });
 
 router.use('/checklogin', async (req, res, next) => {
-  console.log('checking token')
-  console.log('token' + req.query.token);
   try {
     let user = await jwt.verify(req.query.token, COOKIE_KEY);
-    console.log('token is good')
     req.user = user;
     next()
   }
@@ -131,10 +128,8 @@ router.use('/checklogin', async (req, res, next) => {
   }
 });
 router.use('/checklogin', async (req, res, next) => {
-  console.log('checking for user in db')
   try {
     let user = await User.findOne({ spotify_id: req.user.id }).exec()
-    console.log('finished finding user in db')
     req.user = user;
     next();
   }
@@ -143,12 +138,10 @@ router.use('/checklogin', async (req, res, next) => {
   }
 });
 router.get('/checklogin', async (req, res) => {
-  console.log('checking expiration date')
   try {
     let right_now = new Date();
     let expires = new Date(req.user.expires_in);
     if (expires < right_now) {
-      console.log('expired');
       const { data: { access_token } } = await axios({
         url: `https://accounts.spotify.com/api/token`,
         method: 'POST',
@@ -171,7 +164,6 @@ router.get('/checklogin', async (req, res) => {
     // console.log(err);
     // res.status(500).json(err);
   }
-  console.log('sending user');
   res.send(req.user);
 });
 
