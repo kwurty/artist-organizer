@@ -7,13 +7,13 @@ const COOKIE_KEY = process.env.COOKIE_KEY;
 
 
 router.use(async (req, res, next) => {
-    console.log('checking token')
+    console.log('- Artist middleware - checking token')
     let token = req.body.token ? req.body.token : req.query.token;
     console.log(`token - ${token}`);
 
     try {
         let user = await jwt.verify(req.query.token, COOKIE_KEY);
-        console.log(`user - ${user.id}`)
+        console.log(`- Artist Middleware - user - ${user.id}`)
         req.user = user;
         next()
     }
@@ -23,7 +23,7 @@ router.use(async (req, res, next) => {
 });
 
 router.get('/playlists', async (req, res, next) => {
-    console.log(` req user id - ${req.user.id}`);
+    console.log(`- Playlists get - req user id - ${req.user.id}`);
 
     Playlist.find({ spotify_id: req.user.id }).exec(async (err, results) => {
         if (err) {
@@ -39,10 +39,10 @@ router.get('/playlists', async (req, res, next) => {
 })
 
 router.post('/playlist', async (req, res) => {
-    console.log(`Playlist post - ${req.body.token}`)
+    console.log(`- Playlist post - token - ${req.body.token}`)
     let id = jwt.verify(req.body.token, COOKIE_KEY);
     if (id) {
-        console.log(id);
+        console.log(`-Playlist Post - verified jwt - ${id}`);
     }
 })
 
