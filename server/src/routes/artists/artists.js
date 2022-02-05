@@ -6,7 +6,7 @@ const { generateString, validateToken, validateTokenMiddle, generateToken, setFr
 const COOKIE_KEY = process.env.COOKIE_KEY;
 
 
-router.use('/artist', async (req, res, next) => {
+router.use('/playlists', async (req, res, next) => {
     console.log('- Artist middleware - checking token')
     let token = req.body.token ? req.body.token : req.query.token;
     console.log(`token - ${token}`);
@@ -30,20 +30,41 @@ router.get('/playlists', async (req, res, next) => {
             res.send(err);
             console.log(err);
         }
-        if (results.length > 0) {
+        else {
+            console.log(`- Playlists Get - Playlists found`)
             res.send(results);
         }
     });
 
 
 })
+router.use('/playlist', async (req, res, next) => {
+    console.log('- Playlist Post Middleware - checking token')
+    let token = req.body.token ? req.body.token : req.query.token;
+    console.log(`- Playlist Post Middleware - token - ${token}`);
+
+    try {
+        let user = await jwt.verify(req.query.token, COOKIE_KEY);
+        console.log(`- Playlist Post Middleware - user.id - ${user.id}`)
+        req.user = user;
+        next()
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
+});
 
 router.post('/playlist', async (req, res) => {
-    console.log(`- Playlist post - token - ${req.body.token}`)
-    let id = jwt.verify(req.body.token, COOKIE_KEY);
-    if (id) {
-        console.log(`-Playlist Post - verified jwt - ${id}`);
-    }
+    console.log(`- Playlist post - req.user.id - ${req.user.id}`);
+    let newPlaylist = new Playlist({
+        spotify_id: req.user.id,
+        display_name: req.body.name,
+        created_at: new Date()
+    }).save((err, playlist) => {
+        if (err) return res.status(500).json(err)
+
+        res.send(playlist);
+    })
 })
 
 // router.get('/playlists', async (req, res) => {
