@@ -24,20 +24,18 @@ router.use(async (req, res, next) => {
 
 router.get('/playlists', async (req, res, next) => {
     console.log(` req user id - ${req.user.id}`);
-    try {
-        Playlist.find({ spotify_id: req.user.id }).exec(async (err, results) => {
-            if (err) {
-                res.send(err);
-                console.log(err);
-            }
-            if (results.length > 0) {
-                res.send(results);
-            }
-        });
-    }
-    catch (e) {
-        res.status(500).send(e);
-    }
+
+    Playlist.find({ spotify_id: req.user.id }).exec(async (err, results) => {
+        if (err) {
+            res.send(err);
+            console.log(err);
+        }
+        if (results.length > 0) {
+            res.send(results);
+        }
+    });
+
+
 })
 
 router.post('/playlist', async (req, res) => {
