@@ -81,6 +81,7 @@ router.use('/playlist/add', async (req, res, next) => {
 
 router.post('/playlist/add', async (req, res, next) => {
 
+    console.log('POST items - ', req.body.playlistId, req.body.artistName, req.body.artistId, req.body, artistUrl, req.body.artistImage);
     try {
         Playlist.findOne({
             '_id': req.body.playlistId,
