@@ -34,6 +34,9 @@
 
 <script>
 export default {
+  beforeMount() {
+    this.$store.dispatch("tryPlaylistGather");
+  },
   computed: {
     recently_played() {
       return this.$store.state.recently_played;

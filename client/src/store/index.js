@@ -122,6 +122,29 @@ export default createStore({
     },
     setArtistPlaylists(context, payload) {
       context.commit('setArtistPlaylists', payload)
+    },
+    async addArtistToPlaylist(context, payload) {
+      let token = await context.getters.JWT;
+      // let params = new URLSearchParams();
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("name", payload);
+      urlencoded.append("token", token);
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+      };
+
+      fetch("https://artistplaylists.herokuapp.com/artist/playlist", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
     }
   },
   getters: {

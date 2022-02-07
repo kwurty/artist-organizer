@@ -1,6 +1,9 @@
 <template>
   <main v-bind:class="{ background: !auth }">
-    <div v-if="auth" class="logged">Welcome back!</div>
+    <div v-if="auth" class="logged">
+      Welcome back!
+      <recently-played> </recently-played>
+    </div>
     <div v-else class="notlogged">
       <span> Looking for an alternative way to organize your music? </span>
 
@@ -11,8 +14,10 @@
 </template>
 
 <script>
+import RecentlyPlayed from "../views/RecentlyPlayed.vue";
 // import Axios from "axios";
 export default {
+  components: { RecentlyPlayed },
   data() {
     return {
       playlistName: "",

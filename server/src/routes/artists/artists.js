@@ -67,6 +67,54 @@ router.get('/playlist', async (req, res) => {
     })
 })
 
+router.use('/playlist/add', async (req, res, next) => {
+    let token = req.body.token ? req.body.token : req.query.token;
+    try {
+        let user = await jwt.verify(token, COOKIE_KEY);
+        req.user = user;
+        next()
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
+})
+
+router.use('/playlist/add', async (req, res, res) => {
+
+    try {
+        Playlist.findOne({
+            '_id': req.body.playlistId,
+            'spotify_id': req.user.id,
+            'artists.artistid': req.body.artistId
+        }).exec(async (err, playlist) => {
+            if (playlist) {
+                res.status(200).send(playlist)
+            } else {
+                Playlist.findByIdAndUpdate(
+                    req.body.playlistId,
+                    {
+                        $push: {
+                            'artists': {
+                                'artistname': req.body.artistName,
+                                'artistid': req.body.artistId,
+                                'artisturl': req.body.artistUrl,
+                                'artistimage': req.body.artistImage
+                            }
+                        }
+                    }, async (err, results) => {
+                        if (err) {
+                            res.status(500).send(err);
+                        }
+                        res.send(results);
+                    })
+            }
+        });
+
+    } catch (e) {
+        res.status(500).send(e)
+    }
+})
+
 module.exports = router;
 
 // router.use('/playlists', async (req, res, next) => {

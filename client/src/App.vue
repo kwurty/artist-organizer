@@ -41,6 +41,7 @@ export default {
       this.$store.dispatch("setJWT", token);
       this.$store.dispatch("tryAutoLogin");
       this.$store.dispatch("tryPlaylistGather");
+      this.$store.dispatch("getRecentlyPlayed");
     }
   },
 };
