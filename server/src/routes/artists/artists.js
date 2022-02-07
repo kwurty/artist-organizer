@@ -67,19 +67,19 @@ router.get('/playlist', async (req, res) => {
     })
 })
 
-// router.use('/playlist/add', async (req, res, next) => {
-//     let token = req.body.token ? req.body.token : req.query.token;
-//     try {
-//         let user = await jwt.verify(token, COOKIE_KEY);
-//         req.user = user;
-//         next()
-//     }
-//     catch (err) {
-//         res.status(500).json(err)
-//     }
-// })
+router.use('/playlist/add', async (req, res, next) => {
+    let token = req.body.token ? req.body.token : req.query.token;
+    try {
+        let user = await jwt.verify(token, COOKIE_KEY);
+        req.user = user;
+        next()
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
+})
 
-router.post('/playlist/add', async (req, res, res) => {
+router.post('/playlist/add', async (req, res, next) => {
 
     try {
         Playlist.findOne({
