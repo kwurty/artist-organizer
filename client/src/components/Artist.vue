@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import Axios from "axios";
+// import Axios from "axios";
 export default {
   data() {
     return {
@@ -116,25 +116,36 @@ export default {
   },
   methods: {
     async addToPlaylist(playlist) {
-      let results = await Axios.post(
-        `https://artistplaylists.herokuapp.com/artist/playlist/add`,
-        {
-          playlistId: playlist._id,
-          artistName: this.artist.name,
-          artistId: this.artist.id,
-          artistUrl: this.artist.href,
-          artistImage: this.artist.images[0].url || "../assets/no-image.png",
-        },
-        { withCredentials: true }
+      console.log(this.$store.getters.JWT);
+
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      let urlencoded = new URLSearchParams();
+      urlencoded.append("artistName", this.artist.name);
+      urlencoded.append("artistId", this.artist.id);
+      urlencoded.append("playlistId", playlist._id);
+      urlencoded.append("artistUrl", this.artist.href);
+      urlencoded.append(
+        "artistImage",
+        this.artist.images[0].url || "../assets/no-image.png"
       );
-      if (results.status == 200) {
-        this.successful = true;
-      } else {
-        this.successful = false;
-      }
-      setTimeout(() => {
-        this.successful = null;
-      }, 2000);
+      urlencoded.append("token", this.$store.getters.JWT);
+
+      let requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: "follow",
+      };
+
+      fetch(
+        "https://artistplaylists.herokuapp.com/artist/playlist/add",
+        requestOptions
+      )
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
     },
     openArtist(artistId) {
       this.$store.dispatch("getArtist", artistId);
