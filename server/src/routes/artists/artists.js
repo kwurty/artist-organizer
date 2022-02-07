@@ -35,6 +35,17 @@ router.get('/playlists', async (req, res, next) => {
         }
     });
 })
+router.use('/playlist', express.json(), async (req, res, next) => {
+    let token = req.body.token ? req.body.token : req.query.token;
+    try {
+        let user = await jwt.verify(token, COOKIE_KEY);
+        req.user = user;
+        next()
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
+});
 
 router.post('/playlist', async (req, res) => {
     let newPlaylist = new Playlist({
@@ -68,7 +79,7 @@ router.use('/playlist/add', async (req, res, next) => {
     }
 })
 
-router.use('/playlist/add', async (req, res, res) => {
+router.post('/playlist/add', async (req, res, res) => {
 
     try {
         Playlist.findOne({
