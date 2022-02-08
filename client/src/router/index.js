@@ -61,7 +61,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  mode: 'hash',
+  mode: 'history',
   history: routerHistory,
   routes
 });
